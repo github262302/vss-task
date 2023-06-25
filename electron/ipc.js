@@ -1,6 +1,8 @@
 import { ipcMain, shell, Notification, dialog } from "electron"
 import { loadProject } from "./utils.js"
 import { startProcess } from "./process/index.js"
+import { closeProcess } from "./process/state.js"
+import { spawn } from 'child_process';
 
 
 const utils = {
@@ -35,6 +37,20 @@ const utils = {
             cwd: data.cwd,
         }
         startProcess(temp)
+    },
+    stopProcess (pid) {
+        try {
+            process.kill(pid, "SIGKILL")
+        } catch (error) {
+            console.log("error", error);
+        }
+        closeProcess(pid)
+    },
+    openTerminal (path) {
+        spawn('powershell', ["start-process","powershell", "-WorkingDirectory", path])
+    },
+    openVscode (){
+        spawn('powershell', ["code"])
     }
 }
 

@@ -2,7 +2,7 @@ export function startProcess (data) {
     window.electron_utils.startProcess(data)
 }
 export function stopProcess (pid) {
-    console.log('startProcess', pid)
+    window.electron_utils.stopProcess(pid)
 }
 
 export function onProcess (fn) {

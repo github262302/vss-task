@@ -1,64 +1,62 @@
 import { spawn } from "child_process";
+import { post, get, runing } from "./state.js";
+const EVENT_NAME_PROCESS = "process"
 
-let execStatus = false;
 /** 
  * @type {BrowserWindow}
  */
 let mainWindow;
 /** @type {import("child_process").ChildProcessWithoutNullStreams} */
-let runingProcess;
-function sendToRenderer (data) {
+let count = 0
+function sendToRenderer (data, pid) {
+    console.log(count++);
     if (mainWindow) {
-        const EVENT_NAME_PROCESS = "process"
+        post({ pid, data })
+        mainWindow.webContents.send(EVENT_NAME_PROCESS, get())
+    }
+}
+export function sendToUpdate () {
+    mainWindow.webContents.send(EVENT_NAME_PROCESS, get())
+}
+function sendMsg (data) {
+    if (mainWindow) {
+        const EVENT_NAME_PROCESS = "message"
         mainWindow.webContents.send(EVENT_NAME_PROCESS, data)
     }
 }
-export function stopProcess () {
-    if (!execStatus) {
-        sendToRenderer({ type: "stdout", data: "进程未运行!\n" })
+export function startProcess ({ common, args, cwd, name }) {
+    if (runing.some(item => item.name === name)) {
+        sendMsg({ type: "error", message: "进程已经运行!" })
         return
     }
-    if (runingProcess.kill("SIGKILL")) {
-        sendToRenderer({ type: "stdout", data: "进程手动停止成功!" })
-    } else {
-        sendToRenderer({ type: "stdout", data: "进程手动停止失败!" })
-
-    }
-}
-export function startProcess ({ common, args, cwd }) {
-    console.log(common, args, cwd,"zz");
-    if (execStatus) {
-        sendToRenderer({ type: "stderr", data: "进程运行中!" })
-        return
-    }
-    execStatus = true
     const child = spawn(common, args, {
         cwd: cwd || process.cwd(), killSignal: "SIGKILL"
     })
-    runingProcess = child;
-    sendToRenderer({ type: "start", data: `任务启动:${common}` })
+    const pid = child.pid
+    sendToRenderer({
+        type: "start", data: {
+            name: name,
+        }
+    }, pid)
     child.stdout.on('data', (data) => {
-        sendToRenderer({ type: "stdout", data: Buffer.from(data).toString() })
+        sendToRenderer({ type: "stdout", data: Buffer.from(data).toString() }, pid)
     })
     child.stderr.on('data', (data) => {
-        sendToRenderer({ type: "stderr", data: Buffer.from(data).toString() })
+        sendToRenderer({ type: "stderr", data: Buffer.from(data).toString() }, pid)
     })
     child.on('close', (code, signal) => {
-        execStatus = false
         if (code === 0) {
-            sendToRenderer({ type: "close", data: "进程退出!" + signal })
+            sendToRenderer({ type: "close", data: "进程退出!" + signal }, pid)
         } else {
-            sendToRenderer({ type: "error", data: "进程异常!" + signal })
+            sendToRenderer({ type: "error", data: "进程异常!" + signal }, pid)
         }
     })
     child.on('exit', (code, signal) => {
         child.stdout.destroy()
-        execStatus = false
-        sendToRenderer({ type: "close", data: `进程退出!code:${code};singal:${signal}` })
+        sendToRenderer({ type: "close", data: `进程退出!code:${code};singal:${signal}` }, pid)
     })
     child.on('error', (err) => {
-        execStatus = false
-        sendToRenderer({ type: "error", data: "error:" + err.message })
+        sendToRenderer({ type: "error", data: "error:" + err.message }, pid)
     })
 }
 export function setMainWindow (mw) {

@@ -1,7 +1,15 @@
 <template>
     <div class="container">
         <div class="header">
-            VS Code-Task管理器
+            <div class="title">VS Code-Task管理器</div>
+            <div class="right">
+                <el-icon @click="handleSmall" class="hover">
+                    <Minus />
+                </el-icon>
+                <el-icon @click="handleClose" class="hover">
+                    <Close />
+                </el-icon>
+            </div>
         </div>
         <div class="menu">
             <Menu />
@@ -14,6 +22,14 @@
 <script setup>
 import Menu from './menu.vue';
 import Main from '../Main.vue';
+import { winMinimize, winClose } from '@/utils/index';
+import { Close, Minus } from '@element-plus/icons-vue';
+function handleSmall () {
+    winMinimize();
+}
+function handleClose () {
+    winClose();
+}
 </script>
 <style lang="scss" scoped>
 .container {
@@ -32,9 +48,18 @@ import Main from '../Main.vue';
 
 .header {
     grid-area: header;
-    -webkit-app-region: drag;
     padding: 4px 12px;
     cursor: pointer;
+    display: flex;
+
+    .title {
+        -webkit-app-region: drag;
+        // margin-right: auto;
+        flex: 1;
+
+    }
+
+    .right {}
 }
 
 .main {
@@ -50,5 +75,11 @@ import Main from '../Main.vue';
     box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
     overflow: auto;
 
+}
+
+.el-icon {
+    &+.el-icon {
+        margin-left: 10px;
+    }
 }
 </style>

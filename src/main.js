@@ -14,3 +14,4 @@ app.use(createPinia())
 app.use(ElementPlus)
 
 app.mount('#app')
+console.log("vue:start");

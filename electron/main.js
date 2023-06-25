@@ -6,26 +6,43 @@ import { join, dirname, resolve } from 'path';
 import "./ipc.js"
 import { fileURLToPath } from 'url';
 import { setMainWindow } from './process/index.js';
-const __dirname = dirname(new URL(import.meta.url).pathname);
-// const P = require("./process/index")
-// console.log(process);
+const isDev = process.env.NODE_ENV === 'development';
+const preloadPath = join(app.getAppPath(), "deskdist", 'preload.cjs')
+const htmlPath = join(app.getAppPath(), "dist", 'index.html')
+console.log("NODE_ENV", process.env.NODE_ENV);
 const createWindow = () => {
     // 创建浏览窗口
     const mainWindow = new BrowserWindow({
         width: 1200,
         height: 800,
         webPreferences: {
-            preload: join(process.cwd(), "deskdist", 'preload.cjs'),
+            preload: preloadPath,
         },
         resizable: false,
         closable: true,
         titleBarStyle: 'hidden',
     });
     setMainWindow(mainWindow)
+    ipcMain.handle("view", async (e, { name, data }) => {
+        switch (name) {
+            case "close":
+                mainWindow.close()
+                break
+            case "minimize":
+                mainWindow.minimize()
+                break
+            default:
+                break
+        }
+    })
     // P.setMainWindow(mainWindow)
     // 加载 index.html
-    // mainWindow.loadFile('./dist/index.html')
-    mainWindow.loadURL('http://localhost:5173/');
+    if (isDev) {
+        mainWindow.loadURL('http://localhost:5173/')
+    } else {
+        mainWindow.loadFile(htmlPath)
+
+    };
     mainWindow.setProgressBar(0.5);
     // 打开开发工具
     mainWindow.webContents.openDevTools()

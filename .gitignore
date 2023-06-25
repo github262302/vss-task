@@ -28,3 +28,5 @@ coverage
 *.sw?
 deskdist
 .vscode
+
+out/

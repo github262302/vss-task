@@ -1,12 +1,20 @@
 import { join, resolve } from "path"
 import { readFileSync } from "fs"
 const loadPackageJson = function (path) {
-    const packageJsonPath = resolve(path, 'package.json')
-    return JSON.parse(readFileSync(packageJsonPath))
+    try {
+        const packageJsonPath = resolve(path, 'package.json')
+        return JSON.parse(readFileSync(packageJsonPath))
+    } catch (error) {
+        return { scripts: {} }
+    }
 }
 const loadTaskJson = function (path) {
-    const packageJsonPath = resolve(path, ".vscode", 'tasks.json')
-    return JSON.parse(readFileSync(packageJsonPath))
+    try {
+        const packageJsonPath = resolve(path, ".vscode", 'tasks.json')
+        return JSON.parse(readFileSync(packageJsonPath))
+    } catch (error) {
+        return { tasks: [] }
+    }
 }
 const loadScripts = function (json) {
     const scripts = json.scripts
