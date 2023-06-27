@@ -1,5 +1,6 @@
 import { ipcMain } from "electron"
 import { sendToUpdate } from "./index.js"
+import { setProgressBar } from "../utils.js"
 
 export const runing = []
 export function post ({ pid, data }) {
@@ -11,11 +12,10 @@ export function post ({ pid, data }) {
             log: ["启动成功: " + data.data.name + "。pid:" + pid + "!"],
             status: "runing"
         })
-    } else if (
-        type == "close"
-    ) {
+    } else if (type === "close") {
         let index = runing.findIndex(item => item.pid === pid)
         if (index > -1) {
+            runing[index].log.push(data.data)
             runing[index].status = "close"
         }
     } else {
@@ -24,16 +24,23 @@ export function post ({ pid, data }) {
             runing[index].log.push(data.data)
         }
     }
+    if (runing.some(e => e.status === "runing")) {
+        setProgressBar(2)
+    } else {
+        setProgressBar(-1)
+
+    }
+    sendToUpdate()
 }
 export function closeProcess (pid) {
-    let index = runing.findIndex(item => item.pid === pid)
+    let index = runing.findIndex(item => (item.pid === pid && item.status === 'close'))
     if (index > -1) {
         runing.splice(index, 1)
     }
     sendToUpdate()
 }
 export function get () {
-    return runing
+    return JSON.parse(JSON.stringify(runing))
 }
 ipcMain.handle("getProcessData", async () => {
     return get()

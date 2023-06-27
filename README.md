@@ -1,35 +1,12 @@
-# vss-task
+<h1 align="center">
 
-This template should help get you started developing with Vue 3 in Vite.
+[![pCatkx1.png](https://s1.ax1x.com/2023/06/27/pCatkx1.png)](https://imgse.com/i/pCatkx1)
+Vss-Task
+</h1>
 
-## Recommended IDE Setup
+<h6 align="center">
+更方便的启动和管理项目中的任务(vscode-task,npm...)
+</h6>
 
-[VSCode](https://code.visualstudio.com/) + [Volar](https://marketplace.visualstudio.com/items?itemName=Vue.volar) (and disable Vetur) + [TypeScript Vue Plugin (Volar)](https://marketplace.visualstudio.com/items?itemName=Vue.vscode-typescript-vue-plugin).
 
-## Customize configuration
-
-See [Vite Configuration Reference](https://vitejs.dev/config/).
-
-## Project Setup
-
-```sh
-pnpm install
-```
-
-### Compile and Hot-Reload for Development
-
-```sh
-pnpm dev
-```
-
-### Compile and Minify for Production
-
-```sh
-pnpm build
-```
-
-### Lint with [ESLint](https://eslint.org/)
-
-```sh
-pnpm lint
-```
+[![pCatF2R.png](https://s1.ax1x.com/2023/06/27/pCatF2R.png)](https://imgse.com/i/pCatF2R)

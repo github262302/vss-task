@@ -12,13 +12,12 @@ function sendToRenderer (data, pid) {
     console.log(count++);
     if (mainWindow) {
         post({ pid, data })
-        mainWindow.webContents.send(EVENT_NAME_PROCESS, get())
     }
 }
 export function sendToUpdate () {
     mainWindow.webContents.send(EVENT_NAME_PROCESS, get())
 }
-function sendMsg (data) {
+export function sendMsg (data) {
     if (mainWindow) {
         const EVENT_NAME_PROCESS = "message"
         mainWindow.webContents.send(EVENT_NAME_PROCESS, data)
@@ -30,7 +29,9 @@ export function startProcess ({ common, args, cwd, name }) {
         return
     }
     const child = spawn(common, args, {
-        cwd: cwd || process.cwd(), killSignal: "SIGKILL"
+        cwd: cwd || process.cwd(),
+        shell: true,
+        killSignal: "SIGKILL"
     })
     const pid = child.pid
     sendToRenderer({
@@ -39,21 +40,21 @@ export function startProcess ({ common, args, cwd, name }) {
         }
     }, pid)
     child.stdout.on('data', (data) => {
-        sendToRenderer({ type: "stdout", data: Buffer.from(data).toString() }, pid)
+        sendToRenderer({ type: "stdout", data: Buffer.from(data).toString("utf8") }, pid)
     })
     child.stderr.on('data', (data) => {
-        sendToRenderer({ type: "stderr", data: Buffer.from(data).toString() }, pid)
+        sendToRenderer({ type: "stderr", data: Buffer.from(data).toString("utf8") }, pid)
     })
     child.on('close', (code, signal) => {
         if (code === 0) {
             sendToRenderer({ type: "close", data: "进程退出!" + signal }, pid)
         } else {
-            sendToRenderer({ type: "error", data: "进程异常!" + signal }, pid)
+            sendToRenderer({ type: "close", data: "进程异常!" + signal }, pid)
         }
     })
     child.on('exit', (code, signal) => {
-        child.stdout.destroy()
-        sendToRenderer({ type: "close", data: `进程退出!code:${code};singal:${signal}` }, pid)
+        // child.stdout.destroy()
+        sendToRenderer({ type: "stdout", data: `进程exit!code:${code};singal:${signal}` }, pid)
     })
     child.on('error', (err) => {
         sendToRenderer({ type: "error", data: "error:" + err.message }, pid)

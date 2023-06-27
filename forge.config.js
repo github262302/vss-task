@@ -1,6 +1,15 @@
 module.exports = {
   packagerConfig: {
-    asar: true,
+    asar: {},
+    ignore: [
+      "node_modules",
+      "out",
+      ".vscode",
+      "src",
+      "public",
+      "electron"
+    ],
+    icon: '/images/icon'
   },
   rebuildConfig: {},
   makers: [
@@ -10,21 +19,14 @@ module.exports = {
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin'],
-    },
-    {
-      name: '@electron-forge/maker-deb',
-      config: {},
-    },
-    {
-      name: '@electron-forge/maker-rpm',
-      config: {},
+      platforms: ['darwin','x64'],
     },
   ],
   plugins: [
     {
       name: '@electron-forge/plugin-auto-unpack-natives',
-      config: {},
+      config: {
+      },
     },
   ],
 };

@@ -1,6 +1,6 @@
 <template>
     <el-tabs v-model="editableTabsValue" type="card" closable class="demo-tabs" @edit="handleTabsClose">
-        <el-tab-pane v-for="item in editableTabs" :key="item.pid" :label="item.title" :name="item.name">
+        <el-tab-pane v-for="item in log" :key="item.pid" :label="item.name" :name="item.pid">
             <template #label>
                 <span class="custom-tabs-label">
                     <el-icon>
@@ -8,18 +8,23 @@
                         <Check v-else-if="item.status == 'close'" />
                         <MoreFilled v-else />
                     </el-icon>
-                    <span>{{ item.title }}</span>
+                    <span>{{ item.name }}</span>
                 </span>
             </template>
-            <div>
-                <div id="terminal" v-xtrem="{ log, pid: item.name }">
 
-                </div>
+            <div id="terminal" v-xtrem="{ log, pid: item.pid }">
+
             </div>
-
+            <h1>详细信息</h1>
+            <div>
+                进程Id: <span>{{ item.pid }}</span>
+            </div>
+            <div>
+                任务名称: <span>{{ item.name }}</span>
+            </div>
         </el-tab-pane>
 
-        <el-empty description="暂无任务" v-if="editableTabs.length == 0">
+        <el-empty description="暂无任务" v-if="log.length == 0">
 
         </el-empty>
     </el-tabs>
@@ -29,127 +34,89 @@ import { onProcess } from '@/utils/process';
 import { Calendar, Check, Loading, MoreFilled } from '@element-plus/icons-vue';
 import { Terminal } from 'xterm/lib/xterm.js';
 import 'xterm/css/xterm.css';
-// import plaintext from 'highlight.js/lib/languages/plaintext';
-// import 'highlight.js/styles/default.css';
-// import 'highlight.js/styles/github.css';
-import { computed, getCurrentInstance, onMounted, ref } from 'vue';
+import { computed, getCurrentInstance, onMounted, ref, shallowRef, watch } from 'vue';
 import { stopProcess } from '@/utils/process';
-// hljs.registerLanguage('plaintext', plaintext);
+import { WebLinksAddon } from 'xterm-addon-web-links';
 const ters = {}
+const isWrite = {}
 export default {
     components: { Calendar, Loading, Check, MoreFilled },
     directives: {
         xtrem: {
             mounted (el, binding, vnode, oldVnode) {
-                let { log, pid } = binding.value
+                let { pid } = binding.value
                 let terminal = new Terminal()
+                terminal.loadAddon(new WebLinksAddon())
                 terminal.open(el)
                 ters[pid] = terminal
-                let s = log.find(item => item.pid == pid)
-                let t = s.log.join("\n")
-                terminal.write(t)
             },
             updated (el, binding) {
                 let { log, pid } = binding.value
-                let s = log.find(item => item.pid == pid)
-                let t = s.log.join("\n")
-                if (ters[pid]) {
-                    ters[pid].write(t)
+                if (!isWrite[pid]) {
+                    return
                 }
+                isWrite[pid] = false
+                let single = log.findIndex(item => item.pid == pid)
+                if (single == -1) {
+                    return
+                }
+                ters[pid].clear()
+                setTimeout(() => {
+                    log[single].log.map(e => {
+                        if (ters[pid]) {
+                            ters[pid].writeln(e)
+                        }
+                    })
+                }, 100);
             }
         }
     },
     setup () {
         let tabIndex = 2
-        const log = ref([
+        const log = shallowRef([
         ])
         const { proxy } = getCurrentInstance();
         const editableTabsValue = ref('2')
-        const editableTabs = computed(() => {
-            return log.value.map((item, index, arr) => {
-                if (arr.length == 1) {
-                    editableTabsValue.value = arr[0].pid
-                }
-                return {
-                    title: item.name,
-                    name: item.pid,
-                    status: item.status,
-                    pid: item.pid
-                }
-            })
-        })
-
         const formatLog = computed(() => {
             let t = log.value.join("\n")
             return hljs.highlight("shell", t).value
         })
         onMounted(() => {
             onProcess((data) => {
-                log.value = (data)
+                let da = (JSON.parse(JSON.stringify(data)))
+                da.map(e => {
+                    if (e.log) {
+                        isWrite[e.pid] = true
+                    }
+                })
+                log.value = da
+            })
+            watch(log, (val) => {
+                if (val.length == 1) {
+                    editableTabsValue.value = val[0].pid
+                }
             })
         })
         function handleTabsClose (pid) {
-            console.log("pid", log.value, pid);
             if (log.value.some(item => (item.pid == pid && item.status == 'close'))) {
                 stopProcess(pid)
                 delete ters[pid]
 
             } else if (log.value.some(item => (item.pid == pid))) {
-                proxy.$confirm(`是否关闭?进程${pid}将被停止!`, {
+                proxy.$confirm(`是否关闭?进程 ${pid} 将被Kill!`, {
                     type: "warning",
                     title: "系统通知"
                 }).then(() => {
                     stopProcess(pid)
-                    delete ters[pid]
                 })
             }
         }
-
         return {
-            tabIndex, editableTabsValue, editableTabs, formatLog, handleTabsClose, log
+            tabIndex, editableTabsValue, formatLog, handleTabsClose, log
         }
     }
 }
 </script>
-<!-- 
-<script lang="ts" setup>
-
-import { ref } from 'vue'
-import type { TabPaneName } from 'element-plus'
-
-
-
-const handleTabsEdit = (
-    targetName: TabPaneName | undefined,
-    action: 'remove' | 'add'
-) => {
-    if (action === 'add') {
-        const newTabName = `${++tabIndex}`
-        editableTabs.value.push({
-            title: 'New Tab',
-            name: newTabName,
-            content: 'New Tab content',
-        })
-        editableTabsValue.value = newTabName
-    } else if (action === 'remove') {
-        const tabs = editableTabs.value
-        let activeName = editableTabsValue.value
-        if (activeName === targetName) {
-            tabs.forEach((tab, index) => {
-                if (tab.name === targetName) {
-                    const nextTab = tabs[index + 1] || tabs[index - 1]
-                    if (nextTab) {
-                        activeName = nextTab.name
-                    }
-                }
-            })
-        }
-
-        editableTabsValue.value = activeName
-        editableTabs.value = tabs.filter((tab) => tab.name !== targetName)
-    }
-}
-</script> -->
 <style>
 .demo-tabs {
     height: 100%;
@@ -158,12 +125,17 @@ const handleTabsEdit = (
 
 .demo-tabs>.el-tabs__content {
     padding: 32px;
-    color: #6b778c;
-    font-size: 32px;
+    /* color: #6b778c; */
+    /* font-size: 32px; */
     font-weight: 600;
     height: 100%;
     box-sizing: border-box;
     overflow: auto;
+
+}
+
+.demo-tabs>.el-tabs__content .el-tab-pane {
+    height: 100%;
 }
 
 .rotate {
@@ -184,5 +156,9 @@ const handleTabsEdit = (
     display: flex;
     align-items: center;
     gap: 4px;
+}
+
+#terminal {
+    /* height: 100%; */
 }
 </style>

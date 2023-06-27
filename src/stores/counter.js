@@ -10,7 +10,7 @@ export const useProject = defineStore('project', () => {
   } else {
     tempData = JSON.parse(d)
   }
-  const data = ref(tempData)
+  const data = ref(JSON.parse(JSON.stringify(tempData)))
   function update (singleData) {
     data.value = singleData
     storage()
@@ -19,14 +19,15 @@ export const useProject = defineStore('project', () => {
     data.value.push(d)
     storage()
   }
-  function remove (d) {
-    data.value.splice(data.value.indexOf(d), 1)
+  function remove (name) {
+    let index = data.value.findIndex(item => item.name == name)
+    if (index != -1) {
+      data.value.splice(index, 1)
+    }
     storage()
   }
   function storage () {
-    localStorage.setItem('project', JSON.stringify(data.value))
+    cache.project.set(JSON.stringify(data.value))
   }
-  // watch(data, update)
-  // watch(() => data, storage)
   return { data, update, add, remove }
 })

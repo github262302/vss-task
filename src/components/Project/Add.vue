@@ -20,15 +20,16 @@
     </el-dialog>
 </template>
 <script setup>
-import { ref } from 'vue'
+import { reactive, ref } from 'vue'
 import { chooseFolder } from "@/utils"
 import { useProject } from '@/stores/counter';
 
 const vis = ref(false)
-const form = ref({
+const form = reactive({
     name: "",
     path: ""
 })
+const emit = defineEmits(['yes','register'])
 const formRule = {
     name: [
         { required: true, message: '请输入项目名称', trigger: 'blur' },
@@ -43,21 +44,20 @@ function open () {
     vis.value = true
 }
 function yes () {
-    useProject().add(form.value)
+    useProject().add(JSON.parse(JSON.stringify(form)))
     setTimeout(() => {
-        form.value.name = ""
-        form.value.path = ""
+        form.name = ""
+        form.path = ""
         vis.value = false
+        emit("yes")
     }, 0);
 
 }
 function no () { }
-const emit = defineEmits("register")
 function choose () {
     chooseFolder().then(res => {
-        console.log("res", res);
         if (res) {
-            form.value.path = res[0]
+            form.path = res[0]
         }
 
     })

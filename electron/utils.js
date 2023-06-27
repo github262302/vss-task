@@ -1,5 +1,19 @@
 import { join, resolve } from "path"
 import { readFileSync } from "fs"
+import { BrowserWindow } from "electron";
+/** 
+ * @type {BrowserWindow}
+ */
+let mainWindow;
+export function setMW (mw) {
+    if (mw && mw.webContents) {
+        mainWindow = mw
+    } else {
+        console.error('Attempted to set an invalid mainWindow')
+    }
+}
+
+
 const loadPackageJson = function (path) {
     try {
         const packageJsonPath = resolve(path, 'package.json')
@@ -62,3 +76,9 @@ export function deferPromise () {
     return { promise, resolve, reject };
 }
 
+export function setProgressBar (value = 2) {
+    if (mainWindow) {
+        mainWindow.setProgressBar(value)
+    }
+
+}

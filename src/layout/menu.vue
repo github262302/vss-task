@@ -3,10 +3,13 @@
         <el-collapse v-model="activeNames" @change="handleChange">
             <el-collapse-item :key="item.id" v-for="item in  projects" :title="item.name" :name="item.id">
                 <div class="sub-task" title="vscode-task">
-                    <div>
+                    <div class="sub-task-menu">
                         <el-button link size="small" @click="openTerminal(item.path)">终端</el-button>
                         <el-button link size="small" @click="openFolder(item.path)">文件夹</el-button>
-                        <el-button link size="small" @click="openVscode">vscode</el-button>
+                        <!-- <el-button link size="small" @click="openVscode">vscode</el-button> -->
+                        <el-button link type="danger" size="small" @click="Delete(item.name)">
+                            删除
+                        </el-button>
                     </div>
                     <div class="title"> <el-icon class="vm">
                             <Van />
@@ -15,12 +18,17 @@
                     <div class="task" :key="item_m" v-for="item_m in  item.tasks" :title="item_m.label">
                         <div class="task-text">{{ item_m.label }}</div>
                         <div class="task-right hover">
-                            <el-icon v-if="!isRun(taskName(item_m, item))" class="hover" @click="runTask(item_m, item)">
-                                <VideoPlay />
-                            </el-icon>
-                            <el-icon v-else class="rotate">
-                                <Loading />
-                            </el-icon>
+                            <span v-if="!isRun(taskName(item_m, item))" class="hover task-start"
+                                @click="runTask(item_m, item)">
+                                <!-- <VideoPlay /> -->
+                                🚀
+                            </span>
+                            <span v-else-if="isClose(scriptName(item_m, item))">
+                                ✅
+                            </span>
+                            <span v-else class="rotate">
+                                🌀
+                            </span>
                         </div>
                     </div>
                 </div>
@@ -33,40 +41,51 @@
                         <div class="task-text">{{ item_m.name }}</div>
                         <div class="task-right">
 
-                            <el-icon v-if="!isRun(scriptName(item_m, item))" class="hover" @click="runScript(item_m, item)">
-                                <VideoPlay />
-                            </el-icon>
-                            <el-icon v-else class="rotate">
-                                <Loading />
-                            </el-icon>
+                            <span v-if="!isRun(scriptName(item_m, item))" class="hover task-start"
+                                @click="runScript(item_m, item)">
+                                🚀
+                            </span>
+                            <span v-else-if="isClose(scriptName(item_m, item))">
+                                ✅
+                            </span>
+                            <span v-else class="rotate">
+                                🌀
+                            </span>
                         </div>
                     </div>
                 </div>
                 <div class="sub-menu">
-                    <el-icon class="hover">
-                        <Close />
-                    </el-icon>
+
                 </div>
             </el-collapse-item>
 
         </el-collapse>
         <div class="menu">
 
-            <div class="menu-item hover" @click="addOpen"> <el-icon>
+            <div title="添加项目" class="menu-item hover" @click="addOpen"> <el-icon>
                     <Plus />
                 </el-icon></div>
-            <div class="menu-item hover">
+            <div title="打开vscode" class="menu-item hover" @click="openVscode"> <el-icon>
+                    <svg t="1687705979009" class="icon" viewBox="0 0 1024 1024" version="1.1"
+                        xmlns="http://www.w3.org/2000/svg" p-id="1433" width="48" height="48">
+                        <path
+                            d="M746.222933 102.239573l-359.799466 330.820267L185.347413 281.4976 102.2464 329.864533l198.20544 182.132054-198.20544 182.132053 83.101013 48.510293 201.076054-151.558826 359.799466 330.676906 175.527254-85.251413V187.4944z m0 217.57952v384.341334l-255.040853-192.177494z"
+                            fill="#2196F3" p-id="1434"></path>
+                    </svg>
+                </el-icon></div>
+            <div title="设置" class="menu-item hover" @click="$message({ type: 'warning', message: '开发中!' })">
                 <el-icon>
                     <Setting />
                 </el-icon>
             </div>
+
         </div>
-        <ProjectAddVue @register="addRegister" />
+        <ProjectAddVue @register="addRegister" @yes="reload" />
     </div>
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, ref } from 'vue'
-import { Setting, Plus, VideoPlay, Van, Loading, Close } from '@element-plus/icons-vue';
+import { getCurrentInstance, onMounted, ref, shallowRef } from 'vue'
+import { Setting, Plus, VideoPlay, Van, Loading, CopyDocument } from '@element-plus/icons-vue';
 import { useProject } from '@/stores/counter';
 import ProjectAddVue from "@/components/Project/Add.vue"
 import cache from '@/utils/cache';
@@ -76,7 +95,7 @@ import { onProcess, startProcess } from '@/utils/process';
 const { proxy } = getCurrentInstance();
 const addInstance = ref(null)
 
-const log = ref([
+const log = shallowRef([
 ])
 const activeNames = ref(['1'])
 const projects = ref([])
@@ -93,6 +112,10 @@ function addOpen () {
 }
 function isRun (name) {
     return log.value.some(e => e.name === name)
+}
+function isClose (name) {
+    console.log(name, log.value)
+    return log.value.some(e => e.name === name && e.status === "close")
 }
 function taskName (data, all) {
     return [all.name, data.label].join("-")
@@ -129,20 +152,33 @@ function runScript (data, all) {
     startProcess(temp)
 
 }
-onMounted(() => {
-    console.log('mounted', up.data)
+function reload () {
     loadProjectTask(handleProject(cache.project.get())).then(res => {
-        console.log("loadProject", res)
         projects.value = res
     })
+}
+function Delete (name) {
+    proxy.$confirm("是否移除项目:" + name, { type: "warning", title: "系统通知" }).then(() => {
+        up.remove(name)
+        reload()
+    })
+
+}
+onMounted(() => {
+    reload()
     onProcess((data) => {
-        log.value = (data)
+        log.value = (JSON.parse(JSON.stringify(data)))
     })
 })
 </script>
 <style lang="scss" scoped>
+.sub-task-menu {
+    font-size: 12px;
+    // border-bottom: 2px solid var(--current-color);
+}
+
 .demo-collapse {
-    padding-left: 12px;
+    margin-left: 12px;
     display: flex;
     height: 100%;
     flex-direction: column;
@@ -153,12 +189,18 @@ onMounted(() => {
         background-color: white;
         box-shadow: 0 -1px 1px 0 rgba(0, 0, 0, 0.1);
         position: sticky;
+        margin-right: 12px;
+
         bottom: 0;
+        display: flex;
+        gap: 24px;
+        padding: 4px;
+        justify-content: center;
 
         .menu-item {
-            margin-bottom: 12px;
-            text-align: center;
-            transform: translateX(-12px);
+            // margin-bottom: 12px;
+            // text-align: center;
+            // transform: translateX(-12px);
         }
     }
 }
@@ -171,7 +213,7 @@ onMounted(() => {
     border-bottom: 1px solid #ebeef5;
 
     .el-icon {
-        font-size: 1.4em;
+        font-size: 1.2em;
     }
 
     &:hover {
@@ -229,7 +271,49 @@ onMounted(() => {
 .vm {
     vertical-align: middle;
 }
-.sub-menu{
+
+.sub-menu {
     text-align: center;
+}
+
+@keyframes skyRightTop {
+    0% {
+        transform: translate(0, 0);
+        z-index: 100;
+    }
+
+    100% {
+        transform: translate(100%, -100%);
+        z-index: 100;
+
+    }
+
+}
+
+// 底部成扇形左右摇摆动画
+@keyframes swing {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    50% {
+        transform: rotate(10deg);
+    }
+
+    100% {
+        transform: rotate(0deg);
+    }
+
+}
+
+.task-start {
+    // &:active {
+    //     font-size: 5em;
+    //     animation: skyRightTop 0.5s;
+    // }
+
+    &:hover {
+        animation: swing 0.5s;
+    }
 }
 </style>

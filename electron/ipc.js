@@ -2,7 +2,8 @@ import { ipcMain, shell, Notification, dialog } from "electron"
 import { loadProject } from "./utils.js"
 import { startProcess } from "./process/index.js"
 import { closeProcess } from "./process/state.js"
-import { spawn } from 'child_process';
+import { spawn, spawnSync } from 'child_process';
+import treeKill from "tree-kill";
 
 
 const utils = {
@@ -30,9 +31,19 @@ const utils = {
      * @param {{command:string;name:string;path:string}} data
      */
     startProcess (data) {
+        let common, args;
+        if (data.type == 'shell') {
+            let com = data.command.split(" ")
+            let arg = data.command.split(" ")
+            common = com[0]
+            args = arg.slice(1)
+        } else {
+            common = "pnpm"
+            args = data.command.split(" ")
+        }
         let temp = {
-            common: "powershell",
-            args: [data.type == 'shell' ? '' : 'pnpm', ...data.command.split(" ")],
+            common: common,
+            args: args,
             name: data.name,
             cwd: data.cwd,
         }
@@ -40,17 +51,25 @@ const utils = {
     },
     stopProcess (pid) {
         try {
-            process.kill(pid, "SIGKILL")
+            treeKill(pid, 'SIGKILL', err => {
+                console.log("treeKill", err);
+            })
         } catch (error) {
-            console.log("error", error);
+            console.log("error:进程已被kill");
         }
         closeProcess(pid)
     },
     openTerminal (path) {
-        spawn('powershell', ["start-process","powershell", "-WorkingDirectory", path])
+        spawn('start-process', ["powershell", "-WorkingDirectory", path], {
+            detached: true,
+            shell: true,
+        })
     },
-    openVscode (){
-        spawn('powershell', ["code"])
+    openVscode () {
+        spawn('code', [], {
+            detached: true,
+            shell: true,
+        })
     }
 }
 
