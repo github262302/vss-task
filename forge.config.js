@@ -1,3 +1,4 @@
+const path = require("path")
 module.exports = {
   packagerConfig: {
     asar: {},
@@ -9,17 +10,18 @@ module.exports = {
       "public",
       "electron"
     ],
-    icon: '/images/icon'
+    icon: path.resolve(__dirname, 'images', 'icon')
   },
   rebuildConfig: {},
   makers: [
     {
       name: '@electron-forge/maker-squirrel',
-      config: {},
+      config: {
+      },
     },
     {
       name: '@electron-forge/maker-zip',
-      platforms: ['darwin','x64'],
+      platforms: ['darwin'],
     },
   ],
   plugins: [

@@ -3,6 +3,8 @@
 // electron 模块可以用来控制应用的生命周期和创建原生浏览窗口
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join, resolve } from 'path';
+import { setting } from "./settings.js"
+
 import "./ipc.js"
 import { setMainWindow } from './process/index.js';
 import { setMW } from './utils.js';
@@ -56,12 +58,7 @@ const createWindow = () => {
 // 部分 API 在 ready 事件触发后才能使用。
 app.whenReady().then(() => {
     createWindow();
-    // if (isPackaged) {
-        // import("./electron_settings_js.cjs")
-    // } else {
-        import("./settings.js")
-    // }
-
+    setting()
     app.on('activate', () => {
         // 在 macOS 系统内, 如果没有已开启的应用窗口
         // 点击托盘图标时通常会重新创建一个新窗口

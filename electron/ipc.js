@@ -60,10 +60,13 @@ const utils = {
         closeProcess(pid)
     },
     openTerminal (path) {
-        spawn('start-process', ["powershell", "-WorkingDirectory", path], {
-            detached: true,
-            shell: true,
+        let s=spawn('powershell', ["start-process","powershell", "-WorkingDirectory", path], {
+        
         })
+        s.on("exit",(err,sig)=>{
+            console.log("exit",err,sig,s.pid);
+        })
+        s.unref()
     },
     openVscode () {
         spawn('code', [], {

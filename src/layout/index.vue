@@ -32,7 +32,7 @@ import Menu from './menu.vue';
 import Main from '../Main.vue';
 import github from '@/assets/icons/github.svg';
 import Light from '@/../images/icon.png';
-import { winMinimize, winClose } from '@/utils/index';
+import { winMinimize, winClose, openFolder } from '@/utils/index';
 import { Close, Minus, } from '@element-plus/icons-vue';
 function handleSmall () {
     winMinimize();
@@ -41,7 +41,7 @@ function handleClose () {
     winClose();
 }
 function openUrl (src) {
-    window.open(src);
+    openFolder(src);
 }
 function handleGithub () {
     openUrl('https://github.com/github262302/vss-task')
