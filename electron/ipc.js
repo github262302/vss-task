@@ -1,10 +1,11 @@
 import { ipcMain, shell, Notification, dialog } from "electron"
-import { loadProject } from "./utils.js"
 import { startProcess } from "./process/index.js"
 import { closeProcess } from "./process/state.js"
 import { spawn, spawnSync } from 'child_process';
 import treeKill from "tree-kill";
-
+import { loadAllProject } from "./core/task.js";
+import { mws } from "./core/mainWindow.js";
+import { loadImgs } from "./utils.js";
 
 const utils = {
     openFolder (path) {
@@ -20,7 +21,7 @@ const utils = {
         }).show()
     },
     loadProject (list) {
-        return loadProject(list)
+        return loadAllProject(list)
     },
     chooseFolder () {
         return dialog.showOpenDialogSync({
@@ -47,24 +48,27 @@ const utils = {
             name: data.name,
             cwd: data.cwd,
         }
-        startProcess(temp)
+        startProcess.call(this, temp)
     },
     stopProcess (pid) {
         try {
             treeKill(pid, 'SIGKILL', err => {
                 console.log("treeKill", err);
+                if (err) {
+                    this.sendToMessage("treeKill:error" + JSON.stringify(err));
+                }
             })
         } catch (error) {
-            console.log("error:进程已被kill");
+            this.sendToMessage("error:进程已被kill");
         }
-        closeProcess(pid)
+        this.closeProcess(pid)
     },
     openTerminal (path) {
-        let s=spawn('powershell', ["start-process","powershell", "-WorkingDirectory", path], {
-        
+        let s = spawn('powershell', ["start-process", "powershell", "-WorkingDirectory", path], {
+
         })
-        s.on("exit",(err,sig)=>{
-            console.log("exit",err,sig,s.pid);
+        s.on("exit", (err, sig) => {
+            console.log("exit", err, sig, s.pid);
         })
         s.unref()
     },
@@ -73,9 +77,12 @@ const utils = {
             detached: true,
             shell: true,
         })
+    },
+    loadImgs({path, suffix}) {
+        return loadImgs(path, suffix)
     }
 }
 
 ipcMain.handle("utils", async (e, { name, data }) => {
-    return utils[name](data)
+    return utils[name].call(mws['main'], data)
 })

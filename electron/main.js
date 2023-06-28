@@ -8,6 +8,7 @@ import { setting } from "./settings.js"
 import "./ipc.js"
 import { setMainWindow } from './process/index.js';
 import { setMW } from './utils.js';
+import { MainWindow } from './core/mainWindow.js';
 const isPackaged = app.isPackaged
 const basePath = app.getAppPath()
 const iconPath = resolve(basePath, "images", "icon.png")
@@ -27,6 +28,7 @@ const createWindow = () => {
         titleBarStyle: 'hidden',
         icon: iconPath
     });
+    const mw = new MainWindow("main", mainWindow)
     setMainWindow(mainWindow)
     setMW(mainWindow)
     ipcMain.handle("view", async (e, { name, data }) => {
@@ -35,7 +37,10 @@ const createWindow = () => {
                 app.exit()
                 break
             case "minimize":
-                mainWindow.minimize()
+                mw.mainWindow.minimize()
+                break
+            case "reStart":
+                mw.mainWindow.reload()
                 break
             default:
                 break

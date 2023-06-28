@@ -30,14 +30,12 @@ export function post ({ pid, data }) {
         setProgressBar(-1)
 
     }
-    sendToUpdate()
 }
 export function closeProcess (pid) {
     let index = runing.findIndex(item => (item.pid === pid && item.status === 'close'))
     if (index > -1) {
         runing.splice(index, 1)
     }
-    sendToUpdate()
 }
 export function get () {
     return JSON.parse(JSON.stringify(runing))

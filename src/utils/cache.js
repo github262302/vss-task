@@ -4,8 +4,19 @@ class Cache {
         this.key = key;
     }
 
-    get () {
-        return localStorage.getItem(this.key);
+    get (data) {
+        let d = localStorage.getItem(this.key);
+        if (!d) {
+            if (data) {
+                this.set(data);
+                return data;
+            } else {
+                this.set("{}");
+                return "{}";
+            }
+
+        }
+        return d;
     }
 
     set (value) {
@@ -18,6 +29,7 @@ class Cache {
 }
 const cache = {
     project: new Cache('project'),
+    settings: new Cache('settings'),
 };
 
 export default cache

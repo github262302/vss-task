@@ -12,6 +12,7 @@
   <div id="app">hello world</div>
   <div class="start-animation"></div>
   <script>
+    var imgs = ["url('/SwordGod.gif')", "url('/divilcry.gif')", "url('/redyear.gif')"]
     // 防抖函数
     function debounce (fn, delay) {
       let timer = null
@@ -24,7 +25,9 @@
         }, delay)
       }
     }
-
+    function setImgs (data) {
+      imgs.splice(0, imgs.length, ...data)
+    }
     function startAnimation () {
       const startAnimation = document.querySelector('.start-animation')
       startAnimation.classList.add('active')
@@ -33,6 +36,7 @@
     function stopAnimationO () {
       const startAnimation = document.querySelector('.start-animation')
       startAnimation.classList.remove('active')
+      startAnimation.style.backgroundImage = imgs[Math.floor(Math.random() * imgs.length)]
     }
     var stopAnimation = debounce(stopAnimationO, 2000) 
   </script>
@@ -40,10 +44,11 @@
   <style>
     :root {
       --current-color: #409eff;
+      --bg-image: url("/SwordGod.gif");
     }
 
     .start-animation {
-      background-image: url("/DrawAknife.gif");
+      background-image: var(--bg-image);
       background-color: rgba(0, 0, 0, 0.551);
       z-index: 9999;
       position: fixed;
@@ -53,17 +58,18 @@
       height: 100vh;
       background-repeat: no-repeat;
       background-position: 50% 50%;
+      background-size: 150%;
       /* opacity: 0.8; */
       display: none;
     }
 
     @keyframes active {
       0% {
-        opacity: 1;
+        opacity: 0.9;
       }
 
       80% {
-        opacity: 1;
+        opacity: 0.9;
       }
 
       100% {

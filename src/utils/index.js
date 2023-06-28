@@ -20,6 +20,18 @@ export function openTerminal (path) {
 export function openVscode () {
     window.electron_utils.openVscode()
 }
+export function onMessage (fn) {
+    window.electron_utils.onMessage(fn)
+}
+export function reStart () {
+    window.electron_view.reStart()
+}
+/** 
+ * @param {{path:string;suffix:string}} data
+*/
+export function loadImgs (data) {
+    return window.electron_utils.loadImgs(data)
+}
 export function handleProject (data) {
     if (data) {
         return JSON.parse(data)

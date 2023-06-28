@@ -51,7 +51,6 @@ function handleGithub () {
 .container {
     width: 100%;
     height: 100vh;
-    background-color: #f5f5f5;
     display: grid;
     grid-template-columns: 210px 1fr;
     grid-template-areas:

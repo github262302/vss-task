@@ -1,5 +1,6 @@
 import { contextBridge, ipcRenderer } from 'electron';
 const obs = []
+const msgObs = []
 let temp = "[]"
 const utils = {
     openFolder (path) {
@@ -40,6 +41,9 @@ const utils = {
             fn(res)
         })
     },
+    onMessage: (fn) => {
+        msgObs.push(fn)
+    },
     stopProcess (pid) {
         return ipcRenderer.invoke("utils", {
             name: "stopProcess",
@@ -57,6 +61,12 @@ const utils = {
             name: "openVscode",
             data: null
         })
+    },
+    loadImgs (data) {
+        return ipcRenderer.invoke("utils", {
+            name: "loadImgs",
+            data: data
+        })
     }
 }
 contextBridge.exposeInMainWorld('electron_utils', utils);
@@ -66,17 +76,20 @@ contextBridge.exposeInMainWorld('electron_view', {
     },
     minimize () {
         ipcRenderer.invoke("view", { name: "minimize", data: null })
+    },
+    reStart () {
+        ipcRenderer.invoke("view", { name: "reStart", data: null })
     }
 });
 
 window.addEventListener('DOMContentLoaded', function () {
     ipcRenderer.on("process", (e, data) => {
+        console.log("process", data);
         temp = JSON.stringify(data)
         obs.forEach(fn => fn(data))
     })
     ipcRenderer.on("message", (e, data) => {
-        // this.VueApp.$message(data)
-        console.log("message", this);
-
+        console.log("message", data);
+        msgObs.forEach(fn => fn(data))
     })
 });

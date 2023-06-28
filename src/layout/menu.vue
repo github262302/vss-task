@@ -19,11 +19,11 @@
                         <div class="task-text">{{ item_m.label }}</div>
                         <div class="task-right hover">
                             <span v-if="!isRun(taskName(item_m, item))" class="hover task-start"
-                                @click="runTask(item_m, item)">
+                                @click.stop="runTask(item_m, item)">
                                 <!-- <VideoPlay /> -->
                                 🚀
                             </span>
-                            <span v-else-if="isClose(scriptName(item_m, item))">
+                            <span v-else-if="isClose(taskName(item_m, item))">
                                 ✅
                             </span>
                             <span v-else class="rotate">
@@ -42,7 +42,7 @@
                         <div class="task-right">
 
                             <span v-if="!isRun(scriptName(item_m, item))" class="hover task-start"
-                                @click="runScript(item_m, item)">
+                                @click.stop="runScript(item_m, item)">
                                 🚀
                             </span>
                             <span v-else-if="isClose(scriptName(item_m, item))">
@@ -73,7 +73,7 @@
                             fill="#2196F3" p-id="1434"></path>
                     </svg>
                 </el-icon></div>
-            <div title="设置" class="menu-item hover" @click="$message({ type: 'warning', message: '开发中!' })">
+            <div title="设置" class="menu-item hover" @click="handleSettings">
                 <el-icon>
                     <Setting />
                 </el-icon>
@@ -91,6 +91,7 @@ import ProjectAddVue from "@/components/Project/Add.vue"
 import cache from '@/utils/cache';
 import { handleProject, loadProjectTask, openFolder, openTerminal, openVscode } from '@/utils/index';
 import { onProcess, startProcess } from '@/utils/process';
+import { useSettings } from '@/components/Settings/index';
 
 const { proxy } = getCurrentInstance();
 const addInstance = ref(null)
@@ -170,6 +171,10 @@ onMounted(() => {
         log.value = (JSON.parse(JSON.stringify(data)))
     })
 })
+function handleSettings () {
+    const us=useSettings()
+    us.open()
+}
 </script>
 <style lang="scss" scoped>
 .sub-task-menu {

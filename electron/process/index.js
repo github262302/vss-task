@@ -25,7 +25,7 @@ export function sendMsg (data) {
 }
 export function startProcess ({ common, args, cwd, name }) {
     if (runing.some(item => item.name === name)) {
-        sendMsg({ type: "error", message: "进程已经运行!" })
+        this.sendToMessage({ type: "error", message: "进程已经运行!" })
         return
     }
     const child = spawn(common, args, {
@@ -34,30 +34,30 @@ export function startProcess ({ common, args, cwd, name }) {
         killSignal: "SIGKILL"
     })
     const pid = child.pid
-    sendToRenderer({
+    this.sendToProcess({
         type: "start", data: {
             name: name,
         }
     }, pid)
     child.stdout.on('data', (data) => {
-        sendToRenderer({ type: "stdout", data: Buffer.from(data).toString("utf8") }, pid)
+        this.sendToProcess({ type: "stdout", data: Buffer.from(data).toString("utf8") }, pid)
     })
     child.stderr.on('data', (data) => {
-        sendToRenderer({ type: "stderr", data: Buffer.from(data).toString("utf8") }, pid)
+        this.sendToProcess({ type: "stderr", data: Buffer.from(data).toString("utf8") }, pid)
     })
     child.on('close', (code, signal) => {
         if (code === 0) {
-            sendToRenderer({ type: "close", data: "进程退出!" + signal }, pid)
+            this.sendToProcess({ type: "close", data: "进程退出!" + signal }, pid)
         } else {
-            sendToRenderer({ type: "close", data: "进程异常!" + signal }, pid)
+            this.sendToProcess({ type: "close", data: "进程异常!" + signal }, pid)
         }
     })
     child.on('exit', (code, signal) => {
         // child.stdout.destroy()
-        sendToRenderer({ type: "stdout", data: `进程exit!code:${code};singal:${signal}` }, pid)
+        this.sendToProcess({ type: "stdout", data: `进程exit!code:${code};singal:${signal}` }, pid)
     })
     child.on('error', (err) => {
-        sendToRenderer({ type: "error", data: "error:" + err.message }, pid)
+        this.sendToProcess({ type: "error", data: "error:" + err.message }, pid)
     })
 }
 export function setMainWindow (mw) {

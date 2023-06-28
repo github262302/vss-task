@@ -67,5 +67,5 @@
     "sass": "^1.63.4"
   },
   "main": "./deskdist/main.cjs",
-  "type": "commonjs"
+  "type": "module"
 }
