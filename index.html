@@ -7,9 +7,24 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VSS-Task</title>
 </head>
+<script>
+  function clearSettings () {
+    localStorage.setItem("settings",'{"nodePackageTools":"pnpm"}')
+  }
+  function clearLProject () {
+    localStorage.setItem("project", "[]")
+  }
+  function openDev () {
+    window.electron_utils.openDev()
+  }
+</script>
 
 <body>
-  <div id="app">hello world</div>
+  <div id="app">
+    <button onclick="clearSettings()">清理设置缓存</button>
+    <button onclick="clearLProject()">清理项目缓存</button>
+    <button onclick="openDev()">打开调试台</button>
+  </div>
   <div class="start-animation"></div>
   <script>
     var imgs = ["url('/SwordGod.gif')", "url('/divilcry.gif')", "url('/redyear.gif')"]
@@ -41,7 +56,8 @@
     var stopAnimation = debounce(stopAnimationO, 2000) 
   </script>
   <script type="module" src="/src/main.js"></script>
-  <style>
+  <script src="https://at.alicdn.com/t/c/font_4134002_zf8o4l0x1f9.js"></script>
+  <style type="text/css">
     :root {
       --current-color: #409eff;
       --bg-image: url("/SwordGod.gif");
@@ -84,6 +100,14 @@
       animation-fill-mode: forwards;
       animation-iteration-count: 1;
       display: block;
+    }
+
+    .icon {
+      width: 1em;
+      height: 1em;
+      vertical-align: -0.15em;
+      fill: currentColor;
+      overflow: hidden;
     }
   </style>
 </body>
