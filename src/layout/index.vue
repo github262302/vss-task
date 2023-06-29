@@ -8,6 +8,9 @@
                 </div>
             </div>
             <div class="right">
+                <span @click="Dev">
+                    dev
+                </span>
                 <el-icon @click="handleGithub" class="hover">
                     <img style="width:16px" :src="github" />
                 </el-icon>
@@ -32,7 +35,7 @@ import Menu from './menu.vue';
 import Main from '../Main.vue';
 import github from '@/assets/icons/github.svg';
 import Light from '@/../images/icon.png';
-import { winMinimize, winClose, openFolder } from '@/utils/index';
+import { winMinimize, winClose, openFolder, openDev } from '@/utils/index';
 import { Close, Minus, } from '@element-plus/icons-vue';
 function handleSmall () {
     winMinimize();
@@ -45,6 +48,9 @@ function openUrl (src) {
 }
 function handleGithub () {
     openUrl('https://github.com/github262302/vss-task')
+}
+function Dev(){
+    openDev()
 }
 </script>
 <style lang="scss" scoped>

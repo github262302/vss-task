@@ -9,7 +9,7 @@ try {
 
 export function loadBackground () {
     let settings = JSON.parse(cache.settings.get() || '{}')
-    if (!settings.bgCustom) {
+    if (!settings.bgCustom || !settings.bgPath) {
         return
     }
     loadImgs({
@@ -25,7 +25,7 @@ export function loadBackground () {
 }
 export function loadAnimation () {
     let settings = JSON.parse(cache.settings.get() || '{}')
-    if (!settings.animationCustom) {
+    if (!settings.animationCustom || !settings.animationPath) {
         return
     }
     loadImgs({
@@ -35,6 +35,9 @@ export function loadAnimation () {
         if (res.length > 0) {
             let urls = res.map(e => uint8ToFile(e)).map(e => `url('${e}')`)
             window.setImgs(urls)
+            const startAnimation = document.querySelector('.start-animation')
+            startAnimation.style.backgroundImage = urls[Math.floor(Math.random() * urls.length)]
+
         }
     })
 }

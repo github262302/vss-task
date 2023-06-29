@@ -56,16 +56,22 @@ const utils = {
             data: path
         })
     },
-    openVscode () {
+    openVscode (path) {
         return ipcRenderer.invoke("utils", {
             name: "openVscode",
-            data: null
+            data: path || null
         })
     },
     loadImgs (data) {
         return ipcRenderer.invoke("utils", {
             name: "loadImgs",
             data: data
+        })
+    },
+    openDev () {
+        return ipcRenderer.invoke("utils", {
+            name: "openDev",
+            data: null
         })
     }
 }

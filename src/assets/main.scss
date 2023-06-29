@@ -36,3 +36,18 @@ body {
     color: #409eff;
   }
 }
+div.msg-box-500{
+  width:500px;
+  max-width: 500px;
+}
+div.msg-box-600{
+  width:600px;
+  max-width: 600px;
+}
+div.msg-box-700{
+  width:700px;
+  max-width: 700px;
+}
+.el-message-box__header{
+  z-index: 1;
+}

@@ -72,14 +72,17 @@ const utils = {
         })
         s.unref()
     },
-    openVscode () {
-        spawn('code', [], {
+    openVscode (path) {
+        spawn('code', [path], {
             detached: true,
             shell: true,
         })
     },
     loadImgs({path, suffix}) {
         return loadImgs(path, suffix)
+    },
+    openDev(){
+        this.mainWindow.webContents.openDevTools()
     }
 }
 

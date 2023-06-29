@@ -6,12 +6,19 @@
                     <div class="sub-task-menu">
                         <el-button link size="small" @click="openTerminal(item.path)">终端</el-button>
                         <el-button link size="small" @click="openFolder(item.path)">文件夹</el-button>
-                        <!-- <el-button link size="small" @click="openVscode">vscode</el-button> -->
+                        <el-button link size="small" @click="openVscode(item.path)">
+                            <!-- <template #icon>
+                                <svg class="icon" aria-hidden="false" viewBox="0 0 24 24">
+                                    <use xlink:href="icon-npm"></use>
+                                </svg>
+                            </template> -->
+                        vscode
+                        </el-button>
                         <el-button link type="danger" size="small" @click="Delete(item.name)">
                             删除
                         </el-button>
                     </div>
-                    <div class="title"> <el-icon class="vm">
+                    <div class="title" v-if="!!item.tasks.length"> <el-icon class="vm">
                             <Van />
                         </el-icon>&nbsp;vscode任务</div>
 
@@ -172,7 +179,7 @@ onMounted(() => {
     })
 })
 function handleSettings () {
-    const us=useSettings()
+    const us = useSettings()
     us.open()
 }
 </script>

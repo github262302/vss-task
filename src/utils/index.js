@@ -17,8 +17,8 @@ export function openFolder (path) {
 export function openTerminal (path) {
     window.electron_utils.openTerminal(path)
 }
-export function openVscode () {
-    window.electron_utils.openVscode()
+export function openVscode (path) {
+    window.electron_utils.openVscode(path || null)
 }
 export function onMessage (fn) {
     window.electron_utils.onMessage(fn)
@@ -38,4 +38,7 @@ export function handleProject (data) {
     } else {
         []
     }
+}
+export function openDev () {
+    window.electron_utils.openDev()
 }

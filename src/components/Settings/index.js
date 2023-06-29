@@ -10,8 +10,8 @@ export function useSettings () {
                 message: h(indexVue),
                 "showConfirmButton":false,
                 "close-on-click-modal":false,
-                draggable:true
-
+                draggable:true,
+                customClass:"msg-box-700"
             })
         },
         save () { }
