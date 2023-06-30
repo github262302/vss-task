@@ -5,7 +5,7 @@
                 <el-input v-model="form.name"></el-input>
             </el-form-item>
             <el-form-item label="项目路径" prop="path">
-                <el-input v-model="form.path">
+                <el-input readonly v-model="form.path">
                     <template #append>
                         <el-button @click="choose">选择</el-button>
                     </template>
@@ -29,14 +29,14 @@ const form = reactive({
     name: "",
     path: ""
 })
-const emit = defineEmits(['yes','register'])
+const emit = defineEmits(['yes', 'register'])
 const formRule = {
     name: [
         { required: true, message: '请输入项目名称', trigger: 'blur' },
         { min: 3, max: 12, message: '长度在 3 到 12 个字符', trigger: 'blur' }
     ],
     path: [
-        { required: true, message: '请输入项目路径', trigger: 'blur' },
+        { required: true, message: '请选择项目路径', trigger: 'blur' },
         { min: 3, max: 100, message: '长度在 3 到 100 个字符', trigger: 'blur' }
     ]
 }
@@ -55,11 +55,13 @@ function yes () {
 }
 function no () { }
 function choose () {
-    chooseFolder().then(res => {
-        if (res) {
-            form.path = res[0]
-        }
+    Promise.resolve(0).then(() => {
+        chooseFolder().then(res => {
+            if (res) {
+                form.path = res[0]
+            }
 
+        })
     })
 }
 emit("register", {

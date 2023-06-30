@@ -13,8 +13,8 @@ const isProduction = process.env.NODE_ENV == "production";
  */
 const config = {
     entry: {
-        main: "./electron/main.js",
-        preload: "./electron/preload.js",
+        main: _resolve("electron","main.js"),
+        preload: _resolve("electron","preload.js"),
     },
     output: {
         path: _resolve(__dirname, "deskdist"),
@@ -42,6 +42,9 @@ const config = {
     },
     resolve: {
         extensions: [".js", ".mjs"],
+        alias: {
+            vss: _resolve(__dirname, "electron"),
+        },
     },
     target: "electron-main",
 };

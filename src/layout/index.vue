@@ -8,9 +8,6 @@
                 </div>
             </div>
             <div class="right">
-                <span @click="Dev">
-                    dev
-                </span>
                 <el-icon @click="handleGithub" class="hover">
                     <img style="width:16px" :src="github" />
                 </el-icon>
@@ -28,6 +25,25 @@
         <div class="main">
             <Main />
         </div>
+        <div class="tool">
+            <el-button title="打开控制台" link @click.stop="Dev">
+
+                <SvgIcon icon="bug" />
+
+            </el-button>
+            <el-button link title="3张背景图">
+
+                <SvgIcon icon="picture" />
+
+                3
+            </el-button>
+            <el-button link title="3张动图">
+
+                <SvgIcon icon="bim_donghua" />
+
+                3
+            </el-button>
+        </div>
     </div>
 </template>
 <script setup>
@@ -36,7 +52,7 @@ import Main from '../Main.vue';
 import github from '@/assets/icons/github.svg';
 import Light from '@/../images/icon.png';
 import { winMinimize, winClose, openFolder, openDev } from '@/utils/index';
-import { Close, Minus, } from '@element-plus/icons-vue';
+import { Close, Minus, Picture, Files, DataLine } from '@element-plus/icons-vue';
 function handleSmall () {
     winMinimize();
 }
@@ -49,7 +65,7 @@ function openUrl (src) {
 function handleGithub () {
     openUrl('https://github.com/github262302/vss-task')
 }
-function Dev(){
+function Dev () {
     openDev()
 }
 </script>
@@ -72,7 +88,8 @@ function Dev(){
     padding: 8px 12px;
     cursor: pointer;
     display: flex;
-
+    background-color: #fff;
+    z-index:1;
     .title {
         // margin-right: auto;
         flex: 1;
@@ -84,8 +101,7 @@ function Dev(){
 
     .title-content {
         -webkit-app-region: drag;
-        flex:1
-
+        flex: 1
     }
 
     .right {}
@@ -101,7 +117,7 @@ function Dev(){
 
     background-color: #fff;
 
-    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, .1);
+    box-shadow: 1px 0 4px 0 rgba(0, 0, 0, .1);
     overflow: auto;
 
 }
@@ -114,6 +130,25 @@ function Dev(){
 .el-icon {
     &+.el-icon {
         margin-left: 10px;
+    }
+}
+
+.tool {
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 990px;
+    box-sizing: border-box;
+    // height: 24px;
+    padding: 4px;
+    box-shadow: 0 -1px 20px 0 rgba(0, 0, 0, 0.1);
+    text-align: right;
+    padding-right: 24px;
+
+    svg.icon {
+        width: 1.2em;
+        height: 1.2em;
+        margin-right: 2px;
     }
 }
 </style>

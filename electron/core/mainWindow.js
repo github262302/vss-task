@@ -1,4 +1,4 @@
-import { post, get, runing } from "../process/state.js"
+import { post, get, runing } from "vss/process/state"
 
 export const mws = {}
 export class MainWindow {

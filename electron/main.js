@@ -1,14 +1,14 @@
-// main.js
+// main
 
 // electron 模块可以用来控制应用的生命周期和创建原生浏览窗口
 import { app, BrowserWindow, ipcMain } from 'electron';
 import { join, resolve } from 'path';
-import { setting } from "./settings.js"
+import { setting } from "vss/settings"
 
-import "./ipc.js"
-import { setMainWindow } from './process/index.js';
-import { setMW } from './utils.js';
-import { MainWindow } from './core/mainWindow.js';
+import "vss/ipc"
+import { setMainWindow } from 'vss/process/index';
+import { setMW } from 'vss/utils';
+import { MainWindow } from 'vss/core/mainWindow';
 const isPackaged = app.isPackaged
 const basePath = app.getAppPath()
 const iconPath = resolve(basePath, "images", "icon.png")

@@ -1,11 +1,10 @@
 import { ipcMain, shell, Notification, dialog } from "electron"
-import { startProcess } from "./process/index.js"
-import { closeProcess } from "./process/state.js"
-import { spawn, spawnSync } from 'child_process';
+import { startProcess } from "vss/process/index"
+import { spawn } from 'child_process';
 import treeKill from "tree-kill";
-import { loadAllProject } from "./core/task.js";
-import { mws } from "./core/mainWindow.js";
-import { loadImgs } from "./utils.js";
+import { loadAllProject } from "vss/core/task";
+import { mws } from "vss/core/mainWindow";
+import { loadImgs } from "vss/utils";
 
 const utils = {
     openFolder (path) {

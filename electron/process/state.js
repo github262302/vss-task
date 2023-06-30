@@ -1,6 +1,5 @@
 import { ipcMain } from "electron"
-import { sendToUpdate } from "./index.js"
-import { setProgressBar } from "../utils.js"
+import { setProgressBar } from "vss/utils"
 
 export const runing = []
 export function post ({ pid, data }) {

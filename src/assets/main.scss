@@ -51,3 +51,14 @@ div.msg-box-700{
 .el-message-box__header{
   z-index: 1;
 }
+.icon {
+  width: 1.2em;
+  height: 1.2em;
+  vertical-align:middle;
+  fill: currentColor;
+  overflow: hidden;
+}
+// 隐藏滚动条
+.menu::-webkit-scrollbar {
+  display: none;
+}

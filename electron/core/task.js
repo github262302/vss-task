@@ -1,4 +1,4 @@
-import { loadScripts, loadTask, loadFile } from "../utils.js";
+import { loadScripts, loadTask, loadFile } from "vss/utils";
 
 const Task = [
     { name: "vscode任务", path: "./.vscode/tasks.json", load: loadTask, key: "tasks" },

@@ -2,32 +2,31 @@
     <div class="demo-collapse">
         <el-collapse v-model="activeNames" @change="handleChange">
             <el-collapse-item :key="item.id" v-for="item in  projects" :title="item.name" :name="item.id">
-                <div class="sub-task" title="vscode-task">
+                <div class="sub-task">
                     <div class="sub-task-menu">
-                        <el-button link size="small" @click="openTerminal(item.path)">终端</el-button>
-                        <el-button link size="small" @click="openFolder(item.path)">文件夹</el-button>
-                        <el-button link size="small" @click="openVscode(item.path)">
-                            <!-- <template #icon>
-                                <svg class="icon" aria-hidden="false" viewBox="0 0 24 24">
-                                    <use xlink:href="icon-npm"></use>
-                                </svg>
-                            </template> -->
-                        vscode
+                        <el-button title="打开终端" link @click="openTerminal(item.path)">
+                            <SvgIcon icon="shell" />
+                        </el-button>
+                        <el-button title="打开文件夹" link @click="openFolder(item.path)">
+                            <SvgIcon icon="folder" />
+                        </el-button>
+                        <el-button title="打开vscode" link @click="openVscode(item.path)">
+                            <SvgIcon icon="vscode" />
                         </el-button>
                         <el-button link type="danger" size="small" @click="Delete(item.name)">
-                            删除
+                            <SvgIcon icon="shanchu" />
                         </el-button>
                     </div>
-                    <div class="title" v-if="!!item.tasks.length"> <el-icon class="vm">
-                            <Van />
-                        </el-icon>&nbsp;vscode任务</div>
+                    <div class="title" v-if="!!item.tasks.length">
+                        <SvgIcon icon="vscode" class="vm" />
+                        &nbsp;task
+                    </div>
 
-                    <div class="task" :key="item_m" v-for="item_m in  item.tasks" :title="item_m.label">
+                    <div class="task" :key="item_m" v-for="item_m in  item.tasks" :title="item_m.command">
                         <div class="task-text">{{ item_m.label }}</div>
                         <div class="task-right hover">
                             <span v-if="!isRun(taskName(item_m, item))" class="hover task-start"
                                 @click.stop="runTask(item_m, item)">
-                                <!-- <VideoPlay /> -->
                                 🚀
                             </span>
                             <span v-else-if="isClose(taskName(item_m, item))">
@@ -40,11 +39,12 @@
                     </div>
                 </div>
                 <div class="sub-task" title="script">
-                    <div class="title"> <el-icon class="vm">
-                            <Van />
-                        </el-icon>&nbsp;npm script</div>
+                    <div class="title" v-if="!!item.scripts.length">
+                        <SvgIcon icon="npm" class="vm" />
+                        &nbsp;scripts
+                    </div>
 
-                    <div class="task" :key="item_m" v-for="item_m in  item.scripts" :title="item_m.name">
+                    <div class="task" :key="item_m" v-for="item_m in  item.scripts" :title="item_m.command">
                         <div class="task-text">{{ item_m.name }}</div>
                         <div class="task-right">
 
@@ -72,14 +72,6 @@
             <div title="添加项目" class="menu-item hover" @click="addOpen"> <el-icon>
                     <Plus />
                 </el-icon></div>
-            <div title="打开vscode" class="menu-item hover" @click="openVscode"> <el-icon>
-                    <svg t="1687705979009" class="icon" viewBox="0 0 1024 1024" version="1.1"
-                        xmlns="http://www.w3.org/2000/svg" p-id="1433" width="48" height="48">
-                        <path
-                            d="M746.222933 102.239573l-359.799466 330.820267L185.347413 281.4976 102.2464 329.864533l198.20544 182.132054-198.20544 182.132053 83.101013 48.510293 201.076054-151.558826 359.799466 330.676906 175.527254-85.251413V187.4944z m0 217.57952v384.341334l-255.040853-192.177494z"
-                            fill="#2196F3" p-id="1434"></path>
-                    </svg>
-                </el-icon></div>
             <div title="设置" class="menu-item hover" @click="handleSettings">
                 <el-icon>
                     <Setting />
@@ -97,14 +89,17 @@ import { useProject } from '@/stores/counter';
 import ProjectAddVue from "@/components/Project/Add.vue"
 import cache from '@/utils/cache';
 import { handleProject, loadProjectTask, openFolder, openTerminal, openVscode } from '@/utils/index';
-import { onProcess, startProcess } from '@/utils/process';
+import { startProcess } from '@/utils/process';
 import { useSettings } from '@/components/Settings/index';
-
+import { useProcess } from '@/stores/process';
+import { storeToRefs } from 'pinia';
+const upprocess = useProcess()
+const { processValue: log } = storeToRefs(upprocess)
 const { proxy } = getCurrentInstance();
 const addInstance = ref(null)
 
-const log = shallowRef([
-])
+// const log = shallowRef([
+// ])
 const activeNames = ref(['1'])
 const projects = ref([])
 const handleChange = (val) => {
@@ -122,7 +117,6 @@ function isRun (name) {
     return log.value.some(e => e.name === name)
 }
 function isClose (name) {
-    console.log(name, log.value)
     return log.value.some(e => e.name === name && e.status === "close")
 }
 function taskName (data, all) {
@@ -162,6 +156,7 @@ function runScript (data, all) {
 }
 function reload () {
     loadProjectTask(handleProject(cache.project.get())).then(res => {
+        console.log("loadProject", res);
         projects.value = res
     })
 }
@@ -170,18 +165,13 @@ function Delete (name) {
         up.remove(name)
         reload()
     })
-
 }
-onMounted(() => {
-    reload()
-    onProcess((data) => {
-        log.value = (JSON.parse(JSON.stringify(data)))
-    })
-})
 function handleSettings () {
     const us = useSettings()
     us.open()
 }
+onMounted(reload)
+
 </script>
 <style lang="scss" scoped>
 .sub-task-menu {
@@ -206,7 +196,7 @@ function handleSettings () {
         bottom: 0;
         display: flex;
         gap: 24px;
-        padding: 4px;
+        padding: 4px 0 12px 0;
         justify-content: center;
 
         .menu-item {

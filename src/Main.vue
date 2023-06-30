@@ -1,5 +1,5 @@
 <template>
-    <el-tabs v-model="editableTabsValue" type="card" closable class="demo-tabs" @edit="handleTabsClose">
+    <el-tabs v-show="log.length" v-model="editableTabsValue" type="card" closable class="demo-tabs" @edit="handleTabsClose">
         <el-tab-pane v-for="item in log" :key="item.pid" :label="item.name" :name="item.pid">
             <template #label>
                 <span class="custom-tabs-label">
@@ -17,17 +17,21 @@
             </div>
             <h1>详细信息</h1>
             <div>
-                进程Id: <span>{{ item.pid }}</span>
+                进程Id:&nbsp;&nbsp;&nbsp;&nbsp;<span>{{ item.pid }}</span>
             </div>
             <div>
                 任务名称: <span>{{ item.name }}</span>
             </div>
+            <div>
+                执行命令: <span>{{ item.command }}</span>
+            </div>
         </el-tab-pane>
 
-        <el-empty description="暂无任务" v-if="log.length == 0">
 
-        </el-empty>
     </el-tabs>
+    <el-empty image-size="350" :image="undraw_task_re" description="暂无任务" v-if="!log.length">
+
+    </el-empty>
 </template>
 <script>
 import { onProcess } from '@/utils/process';
@@ -37,6 +41,10 @@ import 'xterm/css/xterm.css';
 import { computed, getCurrentInstance, onMounted, ref, shallowRef, watch } from 'vue';
 import { stopProcess } from '@/utils/process';
 import { WebLinksAddon } from 'xterm-addon-web-links';
+import undraw_task_re from '@/assets/bg/undraw_task_re.svg'
+import { useProcess } from '@/stores/process';
+import hljs from 'highlight.js';
+import { storeToRefs } from 'pinia';
 const ters = {}
 const isWrite = {}
 export default {
@@ -65,6 +73,8 @@ export default {
                     log[single].log.map(e => {
                         if (ters[pid]) {
                             ters[pid].writeln(e)
+                            console.log("writeln");
+
                         }
                     })
                 }, 100);
@@ -72,9 +82,9 @@ export default {
         }
     },
     setup () {
+        const upprocess = useProcess()
+        const { processValue: log } = storeToRefs(upprocess)
         let tabIndex = 2
-        const log = shallowRef([
-        ])
         const { proxy } = getCurrentInstance();
         const editableTabsValue = ref('2')
         const formatLog = computed(() => {
@@ -82,19 +92,15 @@ export default {
             return hljs.highlight("shell", t).value
         })
         onMounted(() => {
-            onProcess((data) => {
-                let da = (JSON.parse(JSON.stringify(data)))
-                da.map(e => {
-                    if (e.log) {
-                        isWrite[e.pid] = true
-                    }
-                })
-                log.value = da
-            })
             watch(log, (val) => {
                 if (val.length == 1) {
                     editableTabsValue.value = val[0].pid
                 }
+                val.map(e => {
+                    if (e.log) {
+                        isWrite[e.pid] = true
+                    }
+                })
             })
         })
         function handleTabsClose (pid) {
@@ -112,7 +118,8 @@ export default {
             }
         }
         return {
-            tabIndex, editableTabsValue, formatLog, handleTabsClose, log
+            tabIndex, editableTabsValue, formatLog, handleTabsClose, log,
+            undraw_task_re
         }
     }
 }

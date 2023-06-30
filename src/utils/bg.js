@@ -1,14 +1,18 @@
 import cache from "@/utils/cache";
 import { loadImgs } from "@/utils/index";
-import { pipe } from "ramda";
-try {
-    JSON.parse(cache.settings.get('{"nodePackageTools":"pnpm"}'))
-} catch {
-    cache.settings.set('{"nodePackageTools":"pnpm"}')
+import { loadSettings } from "@/utils/settings";
+import { pipe, set } from "ramda";
+const defaultConfig = {
+    animationCustom: false,
+    animationPath: "",
+    animationSuffix: "gif",
+    bgCustom: false,
+    bgPath: "",
+    bgSuffix: "png",
+    nodePackageTools: "pnpm"
 }
-
 export function loadBackground () {
-    let settings = JSON.parse(cache.settings.get() || '{}')
+    let settings = loadSettings()
     if (!settings.bgCustom || !settings.bgPath) {
         return
     }

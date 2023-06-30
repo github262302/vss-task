@@ -5,7 +5,13 @@
         "paths": {
             "@/*": [
                 "./src/*"
+            ],
+            "vss/*":[
+                "./electron/*"
             ]
-        }
+        },
+        "target": "ESNext",
+        "module": "CommonJS",
     },
+    "include": ["./electron/**/*.js","./src/**/*.js","./src/**/*.vue"]
 }

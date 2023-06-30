@@ -10,6 +10,18 @@
         transform: scale(1);
     }
 }
+// 淡入
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+    100% {
+        opacity: 1;
+    }
+}
 .scaleBM:hover {
     animation: scaleBM 1s infinite;
+}
+.el-empty__image img {
+    animation: fadeIn 1s;
 }
