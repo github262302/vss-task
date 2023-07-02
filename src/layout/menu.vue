@@ -69,9 +69,15 @@
         </el-collapse>
         <div class="menu">
 
-            <div title="添加项目" class="menu-item hover" @click="addOpen"> <el-icon>
-                    <Plus />
-                </el-icon></div>
+            <div title="添加项目" class="menu-item hover">
+                <ProjectAddVue @yes="upp.load">
+                    <template #open>
+                        <el-icon>
+                            <Plus />
+                        </el-icon>
+                    </template>
+                </ProjectAddVue>
+            </div>
             <div title="设置" class="menu-item hover" @click="handleSettings">
                 <el-icon>
                     <Setting />
@@ -79,40 +85,31 @@
             </div>
 
         </div>
-        <ProjectAddVue @register="addRegister" @yes="reload" />
+
     </div>
 </template>
 <script setup>
-import { getCurrentInstance, onMounted, ref, shallowRef } from 'vue'
-import { Setting, Plus, VideoPlay, Van, Loading, CopyDocument } from '@element-plus/icons-vue';
-import { useProject } from '@/stores/counter';
+import { getCurrentInstance, onMounted, ref } from 'vue'
+import { Setting, Plus } from '@element-plus/icons-vue';
+import { useProject } from '@/stores/project';
 import ProjectAddVue from "@/components/Project/Add.vue"
-import cache from '@/utils/cache';
-import { handleProject, loadProjectTask, openFolder, openTerminal, openVscode } from '@/utils/index';
+import { openFolder, openTerminal, openVscode } from '@/utils/index';
 import { startProcess } from '@/utils/process';
 import { useSettings } from '@/components/Settings/index';
 import { useProcess } from '@/stores/process';
 import { storeToRefs } from 'pinia';
+import { useProjectStorage } from '@/utils/project';
 const upprocess = useProcess()
+const up = new useProjectStorage()
+const upp = useProject()
 const { processValue: log } = storeToRefs(upprocess)
+const { projectValue: projects } = storeToRefs(upp)
 const { proxy } = getCurrentInstance();
-const addInstance = ref(null)
-
-// const log = shallowRef([
-// ])
 const activeNames = ref(['1'])
-const projects = ref([])
 const handleChange = (val) => {
     console.log(val)
 }
-const up = useProject()
-function addRegister (instance) {
-    addInstance.value = instance
-}
-function addOpen () {
-    console.log("addInstance.value", addInstance.value);
-    addInstance.value.open()
-}
+
 function isRun (name) {
     return log.value.some(e => e.name === name)
 }
@@ -152,26 +149,20 @@ function runScript (data, all) {
         cwd: all.path
     }
     startProcess(temp)
-
 }
-function reload () {
-    loadProjectTask(handleProject(cache.project.get())).then(res => {
-        console.log("loadProject", res);
-        projects.value = res
-    })
+function projectReload () {
+    upp.load()
 }
 function Delete (name) {
     proxy.$confirm("是否移除项目:" + name, { type: "warning", title: "系统通知" }).then(() => {
         up.remove(name)
-        reload()
-    })
+    }).then(projectReload)
 }
 function handleSettings () {
     const us = useSettings()
     us.open()
 }
-onMounted(reload)
-
+onMounted(projectReload)
 </script>
 <style lang="scss" scoped>
 .sub-task-menu {
@@ -319,3 +310,4 @@ onMounted(reload)
     }
 }
 </style>
+@/stores/project

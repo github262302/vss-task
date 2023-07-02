@@ -25,7 +25,7 @@ export function sendMsg (data) {
 }
 export function startProcess ({ common, args, cwd, name }) {
     if (runing.some(item => item.name === name)) {
-        this.sendToMessage({ type: "error", message: "进程已经运行!" })
+        this.sendToMessage({ type: "error", content: "进程已经运行!",title:"进程消息" })
         return
     }
     const child = spawn(common, args, {

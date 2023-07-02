@@ -3,17 +3,17 @@ import { getCurrentInstance } from 'vue';
 import Layout from './layout/index.vue'
 import { onMessage } from '@/utils/index';
 import { ElConfigProvider } from 'element-plus';
-import { loadAnimation, loadBackground } from '@/utils/bg';
+import { useMessage } from '@/stores/message';
 const { proxy } = getCurrentInstance();
+const up = useMessage()
 window.VueApp = proxy
 onMessage(function (data) {
-  proxy.$message({ showClose: true,message:data })
+  proxy.$message({ showClose: true, message: data.content })
 })
+onMessage(up.add)
 const config = {
   showClose: true
 }
-loadBackground()
-loadAnimation()
 </script>
 
 <template>

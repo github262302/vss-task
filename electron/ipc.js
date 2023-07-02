@@ -54,11 +54,11 @@ const utils = {
             treeKill(pid, 'SIGKILL', err => {
                 console.log("treeKill", err);
                 if (err) {
-                    this.sendToMessage("treeKill:error" + JSON.stringify(err));
+                    this.sendToMessage({ content: "treeKill:" + JSON.stringify(err), title: "进程消息", type: "error" });
                 }
             })
         } catch (error) {
-            this.sendToMessage("error:进程已被kill");
+            this.sendToMessage({ content: "进程已被kill", title: "进程消息", type: "error" });
         }
         this.closeProcess(pid)
     },
@@ -77,10 +77,10 @@ const utils = {
             shell: true,
         })
     },
-    loadImgs({path, suffix}) {
+    loadImgs ({ path, suffix }) {
         return loadImgs(path, suffix)
     },
-    openDev(){
+    openDev () {
         this.mainWindow.webContents.openDevTools()
     }
 }

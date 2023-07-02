@@ -1,6 +1,5 @@
-import { computed, ref, shallowRef } from 'vue'
+import { computed, ref } from 'vue'
 import { defineStore } from 'pinia'
-import cache from '@/utils/cache'
 import { clone } from 'ramda';
 export const useProcess = defineStore('process', () => {
     const process = ref([])

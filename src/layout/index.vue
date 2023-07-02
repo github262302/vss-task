@@ -8,9 +8,7 @@
                 </div>
             </div>
             <div class="right">
-                <el-icon @click="handleGithub" class="hover">
-                    <img style="width:16px" :src="github" />
-                </el-icon>
+
                 <el-icon @click="handleSmall" class="hover">
                     <Minus />
                 </el-icon>
@@ -20,55 +18,66 @@
             </div>
         </div>
         <div class="menu">
-            <Menu />
+            <MenuContent />
         </div>
         <div class="main">
-            <Main />
+            <MainContent />
         </div>
-        <div class="tool">
-            <el-button title="打开控制台" link @click.stop="Dev">
+        <statusBar />
+        <NoticeVue @register="noticeRegister" />
 
-                <SvgIcon icon="bug" />
-
-            </el-button>
-            <el-button link title="3张背景图">
-
-                <SvgIcon icon="picture" />
-
-                3
-            </el-button>
-            <el-button link title="3张动图">
-
-                <SvgIcon icon="bim_donghua" />
-
-                3
-            </el-button>
-        </div>
     </div>
 </template>
-<script setup>
-import Menu from './menu.vue';
-import Main from '../Main.vue';
-import github from '@/assets/icons/github.svg';
-import Light from '@/../images/icon.png';
+<script>
+import emitter from "@/mixin/emitter"
+import statusBar from "./statusBar.vue"
+import MenuContent from './menu.vue';
+import MainContent from '../Main.vue';
 import { winMinimize, winClose, openFolder, openDev } from '@/utils/index';
-import { Close, Minus, Picture, Files, DataLine } from '@element-plus/icons-vue';
-function handleSmall () {
-    winMinimize();
-}
-function handleClose () {
-    winClose();
-}
-function openUrl (src) {
-    openFolder(src);
-}
-function handleGithub () {
-    openUrl('https://github.com/github262302/vss-task')
-}
-function Dev () {
-    openDev()
+import { Close, Minus } from '@element-plus/icons-vue';
+import Light from "@/../images/icon.png"
+import NoticeVue from "@/components/Notice/index.vue"
+import { useNotice } from "@/components/Notice/index.js"
+export default {
+    mixins: [emitter],
+    components: {
+        MenuContent, statusBar, MainContent, Close, Minus, NoticeVue
+    },
+    methods: {
+        handleGithub () {
+            this.openUrl('https://github.com/github262302/vss-task')
+        },
+        Dev () {
+            openDev()
+        }
+        , handleSmall () {
+            winMinimize();
+        }
+        , handleClose () {
+            winClose();
+        }
+        , openUrl (src) {
+            openFolder(src);
+        },
+    },
+    mounted () {
+        this.on$("handleGithub", this.handleGithub)
+        this.on$("Dev", this.Dev)
+        this.on$("noticeOpen", this.noticeAction.open)
+        console.log("Main:this", this);
+
+    },
+    name: "Main",
+    data () {
+        return { Light }
+    },
+    setup () {
+        const [noticeRegister, noticeAction] = useNotice()
+        return { noticeRegister, noticeAction }
+    }
 }
 </script>
+
 <style lang="scss" scoped>
 .container {
     width: 100%;
@@ -89,7 +98,8 @@ function Dev () {
     cursor: pointer;
     display: flex;
     background-color: #fff;
-    z-index:1;
+    z-index: 1;
+
     .title {
         // margin-right: auto;
         flex: 1;
@@ -130,25 +140,6 @@ function Dev () {
 .el-icon {
     &+.el-icon {
         margin-left: 10px;
-    }
-}
-
-.tool {
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    width: 990px;
-    box-sizing: border-box;
-    // height: 24px;
-    padding: 4px;
-    box-shadow: 0 -1px 20px 0 rgba(0, 0, 0, 0.1);
-    text-align: right;
-    padding-right: 24px;
-
-    svg.icon {
-        width: 1.2em;
-        height: 1.2em;
-        margin-right: 2px;
     }
 }
 </style>

@@ -1,5 +1,5 @@
 import cache from "@/utils/cache";
-const defaultConfig = {
+export const defaultConfig = {
     animationCustom: false,
     animationPath: "",
     animationSuffix: "gif",
@@ -12,7 +12,7 @@ export function loadSettings () {
     let settings
     try {
         settings = JSON.parse(cache.settings.get(JSON.stringify(defaultConfig)))
-        Object.assign(settings, defaultConfig)
+        Object.assign(defaultConfig, settings)
 
     } catch (error) {
         settings = defaultConfig
