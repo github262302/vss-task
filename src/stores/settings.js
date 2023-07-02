@@ -22,7 +22,7 @@ export const useSettings = defineStore('settings', () => {
         }).then(res => {
             if (res.length > 0) {
                 animationData.value = res.map(e => uint8ToFile(e)).map(e => `url('${e}')`)
-                animationToBody(bgData.value)
+                animationToBody(animationData.value)
             }
         })
     }
@@ -37,7 +37,7 @@ export const useSettings = defineStore('settings', () => {
         }).then(res => {
             if (res.length > 0) {
                 bgData.value = res.map(e => uint8ToFile(e))
-                bgToBody(animationData.value)
+                bgToBody(bgData.value)
             }
         })
     }

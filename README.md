@@ -10,10 +10,14 @@ Vss-Task
 </h6>
 
 
-[![pC07R0A.png](https://s1.ax1x.com/2023/06/30/pC07R0A.png)](https://imgse.com/i/pC07R0A)
+[![pCrpApQ.png](https://s1.ax1x.com/2023/07/03/pCrpApQ.png)](https://imgse.com/i/pCrpApQ)
 
 #### 酷炫的启动动画
 [![pCatFf2R.png](./images/view.gif)](https://imgse.com/i/pCatF2R)
 #### 系统设置
 ##### 可以配置自己的启动任务gif库
 [![pCwWOQ1.png](https://s1.ax1x.com/2023/06/29/pCwWOQ1.png)](https://imgse.com/i/pCwWOQ1)
+
+#### 多图预览
+
+[![pCrpFfg.png](https://s1.ax1x.com/2023/07/03/pCrpFfg.png)](https://imgse.com/i/pCrpFfg)

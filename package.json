@@ -1,6 +1,7 @@
 {
   "name": "vss-task",
   "version": "0.0.1",
+  "version": "0.0.2",
   "private": true,
   "authors":"github262302",
   "description": "更方便的启动和管理项目中的任务(vscode-task,npm...)",
