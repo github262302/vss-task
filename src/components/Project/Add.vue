@@ -1,7 +1,7 @@
 <template>
     <span>
         <el-dialog append-to-body draggable v-model="vis" title="新增项目">
-            <el-form :model="form" :rules="formRule">
+            <el-form ref="projectAddmRef" :model="form" :rules="formRule">
                 <el-form-item label="项目名称" prop="name">
                     <el-input v-model="form.name"></el-input>
                 </el-form-item>
@@ -30,11 +30,11 @@
     </span>
 </template>
 <script setup>
-import { reactive, ref } from 'vue'
+import { getCurrentInstance, reactive, ref } from 'vue'
 import { chooseFolder } from "@/utils"
-import { useProject } from '@/stores/project';
 import { useProjectStorage } from '@/utils/project';
-const ups =new useProjectStorage()
+const { proxy } = getCurrentInstance();
+const ups = new useProjectStorage()
 const vis = ref(false)
 const form = reactive({
     name: "",
@@ -55,13 +55,18 @@ function open () {
     vis.value = true
 }
 function yes () {
-    ups.add(JSON.parse(JSON.stringify(form)))
-    setTimeout(() => {
-        form.name = ""
-        form.path = ""
-        vis.value = false
-        emit("yes")
-    }, 0);
+    proxy.$refs['projectAddmRef'].validate().then((valid) => {
+        if (valid) {
+            ups.add(JSON.parse(JSON.stringify(form)))
+            setTimeout(() => {
+                form.name = ""
+                form.path = ""
+                vis.value = false
+                emit("yes")
+            }, 0);
+        }
+    })
+
 
 }
 function choose () {
