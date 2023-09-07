@@ -65,8 +65,8 @@
 
                 </div>
             </el-collapse-item>
-
         </el-collapse>
+        <el-empty v-if="!projects.length" description="暂未添加项目 请点击下方"></el-empty>
         <div class="menu">
 
             <div title="添加项目" class="menu-item hover">

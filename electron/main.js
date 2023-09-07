@@ -12,9 +12,9 @@ import { MainWindow } from 'vss/core/mainWindow';
 const isPackaged = app.isPackaged
 const basePath = app.getAppPath()
 const iconPath = resolve(basePath, "images", "icon.png")
-const preloadPath = join(basePath, "deskdist", 'preload.cjs')
+const preloadPath = join(basePath, "dist","main", 'preload.cjs')
 // const settingsPath = "./electron_settings_js.cjs"
-const htmlPath = join(basePath, "dist", 'index.html')
+const htmlPath = join(basePath, "dist", "render",'index.html')
 const createWindow = () => {
     // 创建浏览窗口
     const mainWindow = new BrowserWindow({

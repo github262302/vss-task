@@ -17,8 +17,7 @@ const config = {
         preload: _resolve("electron","preload.js"),
     },
     output: {
-        path: _resolve(__dirname, "deskdist"),
-        clean: true,
+        path: _resolve(__dirname, "dist","main"),
         filename: "[name].cjs"
     },
     plugins: [

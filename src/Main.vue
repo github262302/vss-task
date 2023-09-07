@@ -36,7 +36,7 @@
 <script>
 import { onProcess } from '@/utils/process';
 import { Calendar, Check, Loading, MoreFilled } from '@element-plus/icons-vue';
-import { Terminal } from 'xterm/lib/xterm.js';
+import { Terminal } from 'xterm';
 import 'xterm/css/xterm.css';
 import { computed, getCurrentInstance, onMounted, ref, shallowRef, watch } from 'vue';
 import { stopProcess } from '@/utils/process';
@@ -45,6 +45,9 @@ import undraw_task_re from '@/assets/bg/undraw_task_re.svg'
 import { useProcess } from '@/stores/process';
 import hljs from 'highlight.js';
 import { storeToRefs } from 'pinia';
+/** 
+ * @type {Record<string,Terminal>}
+*/
 const ters = {}
 const isWrite = {}
 export default {
@@ -68,16 +71,14 @@ export default {
                 if (single == -1) {
                     return
                 }
-                ters[pid].clear()
+             
+                // ters[pid].write('Hello, world!')
                 setTimeout(() => {
-                    log[single].log.map(e => {
-                        if (ters[pid]) {
-                            ters[pid].writeln(e)
-                            console.log("writeln");
-
-                        }
-                    })
-                }, 100);
+                    ters[pid].reset()
+                    let e=log[single].log.join("\n")
+                    console.log("e",e)
+                    ters[pid].write(e)
+                }, 15);
             }
         }
     },
