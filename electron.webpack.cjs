@@ -1,23 +1,21 @@
 // Generated using webpack-cli https://github.com/webpack/webpack-cli
 
-import { resolve as _resolve } from "path";
-import webpack from "webpack";
-import { fileURLToPath } from 'url';
-import { dirname } from 'path';
+const { resolve: _resolve } = require('path')
+const webpack = require("webpack")
+const { fileURLToPath } = require("url")
+const { dirname } = require("path")
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = dirname(__filename);
 const isProduction = process.env.NODE_ENV == "production";
 /**
  *@type {webpack.Configuration}
  */
 const config = {
     entry: {
-        main: _resolve("electron","main.js"),
-        preload: _resolve("electron","preload.js"),
+        main: _resolve("electron", "main.js"),
+        preload: _resolve("electron", "preload.js"),
     },
     output: {
-        path: _resolve(__dirname, "dist","main"),
+        path: _resolve(__dirname, "dist", "main"),
         filename: "[name].cjs"
     },
     plugins: [
@@ -47,12 +45,9 @@ const config = {
     },
     target: "electron-main",
 };
-
-export default () => {
-    if (isProduction) {
-        config.mode = "production";
-    } else {
-        config.mode = "development";
-    }
-    return config;
-};
+if (isProduction) {
+    config.mode = "production";
+} else {
+    config.mode = "development";
+}
+module.exports = config

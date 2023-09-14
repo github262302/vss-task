@@ -18,7 +18,7 @@ const htmlPath = join(basePath, "dist", "render",'index.html')
 const createWindow = () => {
     // 创建浏览窗口
     const mainWindow = new BrowserWindow({
-        width: 1200,
+        width: 900,
         height: 800,
         webPreferences: {
             preload: preloadPath,
@@ -46,6 +46,7 @@ const createWindow = () => {
                 break
         }
     })
+    // mw.mainWindow.minimize()
     // P.setMainWindow(mainWindow)
     // 加载 index.html
     if (!isPackaged) {
