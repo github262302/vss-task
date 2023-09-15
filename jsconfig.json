@@ -6,12 +6,21 @@
             "@/*": [
                 "./src/*"
             ],
-            "vss/*":[
+            "vss/*": [
                 "./electron/*"
             ]
         },
         "target": "ESNext",
         "module": "CommonJS",
+        "jsx": "react-jsx",
+        "lib": ["dom","ESNext","ES2015"],
+        "allowImportingTsExtensions": true
     },
-    "include": ["./electron/**/*.js","./src/**/*.js","./src/**/*.vue"]
+    "include": [
+        "./electron/**/*.js",
+        "./src/**/*.js",
+        "./src/**/*.jsx",
+        "./src/**/*.tsx",
+        "./src/**/*.ts",
+    ]
 }

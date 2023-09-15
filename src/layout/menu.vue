@@ -62,7 +62,6 @@
                     </div>
                 </div>
                 <div class="sub-menu">
-
                 </div>
             </el-collapse-item>
         </el-collapse>
@@ -310,4 +309,3 @@ onMounted(projectReload)
     }
 }
 </style>
-@/stores/project

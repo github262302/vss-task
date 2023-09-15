@@ -108,7 +108,6 @@ export default {
             if (log.value.some(item => (item.pid == pid && item.status == 'close'))) {
                 stopProcess(pid)
                 delete ters[pid]
-
             } else if (log.value.some(item => (item.pid == pid))) {
                 proxy.$confirm(`是否关闭?进程 ${pid} 将被Kill!`, {
                     type: "warning",
