@@ -1,4 +1,5 @@
 import { createSlice } from '@reduxjs/toolkit'
+import {RootState} from '../index'
 export const messageSlice = createSlice({
   name:"message",
   initialState:{
@@ -15,7 +16,7 @@ export const messageSlice = createSlice({
   extraReducers:{
   },
 })
-export const message_data = (state) => {
+export const message_data = (state:RootState) => {
 	return state.message.message
 }
 export const {add_message} = messageSlice.actions

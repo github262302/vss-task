@@ -25,13 +25,14 @@ export function sendMsg (data) {
 }
 export function startProcess ({ common, args, cwd, name }) {
     if (runing.some(item => item.name === name)) {
-        this.sendToMessage({ type: "error", content: "进程已经运行!",title:"进程消息" })
+        this.sendToMessage({ type: "error", content: "进程已经运行!", title: "进程消息" })
         return
     }
     const child = spawn(common, args, {
         cwd: cwd || process.cwd(),
         shell: true,
-        killSignal: "SIGKILL"
+        killSignal: "SIGKILL",
+        stdio: "pipe"
     })
     const pid = child.pid
     this.sendToProcess({
@@ -40,10 +41,21 @@ export function startProcess ({ common, args, cwd, name }) {
         }
     }, pid)
     child.stdout.on('data', (data) => {
-        this.sendToProcess({ type: "stdout", data: Buffer.from(data).toString("utf8") }, pid)
+        /** @type {string} */
+        let str = data.toString()
+        let strs = str.split('\n')
+        strs.forEach(item => {
+            let s = item.trim()
+            if (!!s) {
+                this.sendToProcess({ type: "stdout", data: s }, pid)
+            }
+
+        })
+        // this.sendToProcess({ type: "stdout", data: data.toString()}, pid)
     })
     child.stderr.on('data', (data) => {
-        this.sendToProcess({ type: "stderr", data: Buffer.from(data).toString("utf8") }, pid)
+
+        this.sendToProcess({ type: "stderr", data: data.toString().trim() }, pid)
     })
     child.on('close', (code, signal) => {
         if (code === 0) {

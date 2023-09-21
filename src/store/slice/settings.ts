@@ -1,6 +1,7 @@
 import { createSlice } from '@reduxjs/toolkit'
 import { clone } from 'ramda';
 import { loadSettings } from '@/utils/settings';
+import {RootState} from '../index'
 export const settingsSlice = createSlice({
   name:"settings",
   initialState:{
@@ -18,7 +19,7 @@ export const settingsSlice = createSlice({
   extraReducers:{
   },
 })
-export const settings_data = (state) => {
+export const settings_data = (state:RootState)=> {
 	return state.settings.settings
 }
 export const {update_settings} = settingsSlice.actions

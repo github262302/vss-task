@@ -9,8 +9,10 @@ import { useProjectStorage } from "@/utils/project";
 import { onMessage } from "@/utils/index";
 import { add_message } from "@/store/slice/message";
 import { message } from "antd";
-const ups = new useProjectStorage();
+import { get_project_data_async } from "./store/slice/project";
+
 export default () => {
+  console.log("app render");
   const dispatch = useAppDispatch();
 
   // ? 订阅流程数据
@@ -24,9 +26,7 @@ export default () => {
 
   // ? 订阅菜单数据
   useEffect(() => {
-    loadProjectTask(ups.load()).then(res => {
-      dispatch(update_project(res));
-    });
+    dispatch(get_project_data_async());
     return () => {};
   }, []);
 

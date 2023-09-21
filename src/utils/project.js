@@ -55,3 +55,4 @@ export class useProjectStorage {
         return this.get()
     }
 }
+export const ups = new useProjectStorage();

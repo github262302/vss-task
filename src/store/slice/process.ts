@@ -1,4 +1,5 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import {RootState} from '../index'
 export type ProcessField = {
   name: string;
   pid: number;
@@ -32,7 +33,7 @@ export const get_process_data = createAsyncThunk<any>(
     return state;
   },
 );
-export const process_data = state => {
+export const process_data = (state:RootState) => {
   return state.process.process as Array<ProcessField>;
 };
 export const { update_process } = processSlice.actions;

@@ -10,6 +10,10 @@ import { Button } from "antd";
 import { startProcess } from "@/utils/process";
 import { openFolder, openTerminal, openVscode } from "@/utils/index";
 import { message } from "antd";
+import { Modal } from "antd";
+import { get_project_data_async } from "../store/slice/project";
+const ups = new useProjectStorage();
+
 function taskName(data, all) {
   return [all.name, data.label].join("-");
 }
@@ -17,8 +21,20 @@ function scriptName(data, all) {
   return [all.name, data.name].join("-");
 }
 const App = () => {
+  console.log("menu render");
+  const dispatch = useAppDispatch();
   const projectData = useAppSelector(project_data);
   const processData = useAppSelector(process_data);
+  function DeleteItem(name) {
+    Modal.confirm({
+      onOk: () => {
+        ups.remove(name);
+        dispatch(get_project_data_async());
+      },
+      title: "系统通知",
+      content: "是否移除项目:" + name + " ?",
+    });
+  }
   const showProjectData = projectData.map((item, index) => ({
     key: index,
     label: item.name,
@@ -35,7 +51,9 @@ const App = () => {
             <Button type={"link"} onClick={openVscode.bind(null, item.path)}>
               vscode
             </Button>
-            <Button type={"link"}>shanchu</Button>
+            <Button type={"link"} onClick={() => DeleteItem(item.name)}>
+              shanchu
+            </Button>
           </div>
         </div>
         <div>
@@ -84,6 +102,7 @@ const App = () => {
     };
     startProcess(temp);
   }
+
   return (
     <div className={styles["demo-collapse"]}>
       <Collapse items={showProjectData} defaultActiveKey={["1"]} />

@@ -5,6 +5,7 @@ import { useEffect } from "react";
 import { ProcessFieldUsed, process_data } from "@/store/slice/process";
 import { useAppSelector } from "@/store";
 import { Terminal } from "xterm";
+import { FitAddon } from "xterm-addon-fit";
 import { WebLinksAddon } from "xterm-addon-web-links";
 import "xterm/css/xterm.css";
 import { stopProcess } from "@/utils";
@@ -14,18 +15,26 @@ import { Col, Divider, Row } from "antd";
 import { Button } from "antd";
 import { Empty } from "antd";
 import undraw_task_re from "@/assets/bg/undraw_task_re.svg";
+import { debounce } from "lodash-es";
 /**
  * @type {Record<string,Terminal>}
  */
 const ters = {};
-const XTermApp = ({ pid, close }) => {
+const XTermApp = ({ pid, close }: { pid: number; close: Function }) => {
   const processData = useAppSelector(process_data);
   const ref = useRef();
   const currentData = processData.find(item => item.pid === pid);
   useEffect(() => {
     console.log("mount", ref);
-    let terminal = new Terminal();
+    let terminal = new Terminal({
+      cols: 80,
+      rows: 24,
+      cursorBlink: true,
+      convertEol: false,
+    });
     terminal.loadAddon(new WebLinksAddon());
+    const fitAddon = new FitAddon();
+    terminal.loadAddon(fitAddon);
     terminal.open(ref.current);
     ters[pid] = terminal;
     return () => {
@@ -34,14 +43,19 @@ const XTermApp = ({ pid, close }) => {
   }, []);
   useEffect(() => {
     console.log("update:currentData", currentData);
-    if (ters[pid]) {
-      new Promise((res, rej) => {
-        ters[pid].reset();
-        res(1);
-      }).then(() => {
-        ters[pid].write(currentData.log.join("\n"));
-      });
-    }
+    let fn = debounce(() => {
+      if (ters[pid]) {
+        new Promise((res, rej) => {
+          ters[pid].clear();
+          res(1);
+        }).then(() => {
+          currentData.log.forEach(item => {
+            ters[pid].writeln(item);
+          });
+        });
+      }
+    }, 200);
+    fn();
   }, [currentData]);
   return (
     <div>
@@ -50,7 +64,13 @@ const XTermApp = ({ pid, close }) => {
           进程Id:&nbsp;&nbsp;&nbsp;&nbsp;<span>{currentData.pid}</span>
         </Col>
         <Col flex="100px">
-          <Button onClick={() => close(currentData.pid)}>停止</Button>
+          <Button
+            type="primary"
+            danger={currentData.status == "runing"}
+            onClick={() => close(currentData.pid)}
+          >
+            {currentData.status == "runing" ? "停止" : "关闭"}
+          </Button>
         </Col>
       </Row>
       <div></div>
@@ -73,6 +93,7 @@ const App: React.FC = () => {
   const onClose = pid => {
     if (processData.some(item => item.pid == pid && item.status == "close")) {
       stopProcess(pid);
+      ters[pid].dispose();
       delete ters[pid];
     } else if (processData.some(item => item.pid == pid)) {
       Modal.confirm({
