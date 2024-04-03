@@ -1,36 +1,57 @@
-import { ipcMain, shell, Notification, dialog } from "electron"
+import { ipcMain, shell, Notification, dialog, BrowserWindow, app } from "electron"
 import { startProcess } from "vss/process/index"
 import { spawn } from 'child_process';
 import treeKill from "tree-kill";
 import { loadAllProject } from "vss/core/task";
-import { mws } from "vss/core/mainWindow";
+import { getMainWindow, mws , MainWindow } from "vss/core/mainWindow";
 import { loadImgs } from "vss/utils";
-
+import { join, resolve } from "path";
+import { get } from "./process/state";
+/**
+ * @type {Record<string, any>}
+ 
+ */
 const utils = {
-    openFolder (path) {
+    /** 
+     * @this {MainWindow}
+     */
+    openFolder(path) {
         shell.openPath(path)
     },
-    openUrl (url) {
+    /** 
+     * @this {MainWindow}
+     */
+    openUrl(url) {
         shell.openExternal(url)
     },
-    message (data) {
+    /** 
+     * @this {MainWindow}
+     */
+    message(data) {
         new Notification({
             title: "系统通知！",
             body: data,
         }).show()
     },
-    loadProject (list) {
+    /** 
+     * @this {MainWindow}
+     */
+    loadProject(list) {
         return loadAllProject(list)
     },
-    chooseFolder () {
+    /** 
+     * @this {MainWindow}
+     */
+    chooseFolder() {
         return dialog.showOpenDialogSync({
             properties: ["openDirectory"],
         })
     },
     /**
      * @param {{command:string;name:string;path:string}} data
+     * @this {MainWindow}
      */
-    startProcess (data) {
+    startProcess(data) {
         let common, args;
         if (data.type == 'shell') {
             let com = data.command.split(" ")
@@ -49,7 +70,10 @@ const utils = {
         }
         startProcess.call(this, temp)
     },
-    stopProcess (pid) {
+    /** 
+     * @this {MainWindow}
+     */
+    stopProcess(pid) {
         try {
             treeKill(pid, 'SIGKILL', err => {
                 console.log("treeKill", err);
@@ -62,7 +86,10 @@ const utils = {
         }
         this.closeProcess(pid)
     },
-    openTerminal (path) {
+    /** 
+     * @this {MainWindow}
+     */
+    openTerminal(path) {
         let s = spawn('powershell', ["start-process", "powershell", "-WorkingDirectory", path], {
 
         })
@@ -71,20 +98,55 @@ const utils = {
         })
         s.unref()
     },
-    openVscode (path) {
+    /** 
+     * @this {MainWindow}
+     */
+    openVscode(path) {
         spawn('code', [path], {
             detached: true,
             shell: true,
         })
     },
-    loadImgs ({ path, suffix }) {
+    /** 
+     * @this {MainWindow}
+     */
+    loadImgs({ path, suffix }) {
         return loadImgs(path, suffix)
     },
-    openDev () {
+    /** 
+     * @this {MainWindow}
+     */
+    openDev() {
         this.mainWindow.webContents.openDevTools()
+    },
+    /** 
+     * @this {MainWindow}
+     */
+    addProject() {
+
     }
 }
 
 ipcMain.handle("utils", async (e, { name, data }) => {
-    return utils[name].call(mws['main'], data)
+    const main = getMainWindow()
+    return utils[name].call(main, data)
+})
+ipcMain.handle("view", async (e, { name, data }) => {
+    const main = getMainWindow()
+    switch (name) {
+        case "close":
+            app.exit()
+            break
+        case "minimize":
+            main.mainWindow.minimize()
+            break
+        case "reStart":
+            main.mainWindow.reload()
+            break
+        default:
+            break
+    }
+})
+ipcMain.handle("getProcessData", async () => {
+    return get()
 })

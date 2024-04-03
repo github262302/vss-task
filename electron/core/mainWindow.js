@@ -1,7 +1,17 @@
 import { post, get, runing } from "vss/process/state"
 
+/** 
+ * @type {Record<string, MainWindow>}
+ */
 export const mws = {}
 export class MainWindow {
+    /** @type {import("electron").BrowserWindow} */
+    mainWindow;
+    /**
+     * 
+     * @param {string} name 
+     * @param {import("electron").BrowserWindow} mainWindow 
+     */
     constructor(name, mainWindow) {
         this.name = name
         this.mainWindow = mainWindow
@@ -24,4 +34,8 @@ export class MainWindow {
     _updateProcess(){
         this.mainWindow.webContents.send("process", get())
     }
+}
+export function getMainWindow(name) {
+    const _name = name || "main"
+    return mws[_name]
 }

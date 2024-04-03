@@ -1,5 +1,7 @@
-import { resolve } from "path"
+import { join, resolve } from "path"
 import { readFileSync, readdirSync } from "fs"
+import { app, BrowserWindow, Menu } from "electron";
+import { getMainWindow } from "./core/mainWindow";
 /** 
  * @type {BrowserWindow}
  */
@@ -71,4 +73,28 @@ export function loadImgs (path, suffix) {
         }
     }
     return result
+}
+export function openAddProject(){
+    const basePath = app.getAppPath()
+    const iconPath = resolve(basePath, "images", "icon.png")
+    const preloadPath = join(basePath, "dist", "main", 'preload.cjs')
+    const main = getMainWindow()
+    const children = new BrowserWindow({
+        width: 345,
+        height: 310,
+        icon: iconPath,
+        title: "add new project",
+        titleBarStyle: 'hiddenInset',
+        resizable: false,
+        webPreferences: {
+            preload: preloadPath,
+        },
+        parent: main.mainWindow,
+
+    });
+    children.loadURL('http://localhost:5173/addproject/')
+    children.once('ready-to-show', () => {
+        children.setMenu(Menu.buildFromTemplate([]))
+        children.show()
+    })
 }

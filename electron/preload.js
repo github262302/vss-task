@@ -3,10 +3,10 @@ const obs = []
 const msgObs = []
 let temp = "[]"
 const utils = {
-    openFolder (path) {
+    openFolder(path) {
         return ipcRenderer.invoke("utils", { name: "openFolder", data: path })
     },
-    openUrl (url) {
+    openUrl(url) {
 
         return ipcRenderer.invoke("utils", { name: "openUrl", data: url })
     },
@@ -44,31 +44,31 @@ const utils = {
     onMessage: (fn) => {
         msgObs.push(fn)
     },
-    stopProcess (pid) {
+    stopProcess(pid) {
         return ipcRenderer.invoke("utils", {
             name: "stopProcess",
             data: pid
         })
     },
-    openTerminal (path) {
+    openTerminal(path) {
         return ipcRenderer.invoke("utils", {
             name: "openTerminal",
             data: path
         })
     },
-    openVscode (path) {
+    openVscode(path) {
         return ipcRenderer.invoke("utils", {
             name: "openVscode",
             data: path || null
         })
     },
-    loadImgs (data) {
+    loadImgs(data) {
         return ipcRenderer.invoke("utils", {
             name: "loadImgs",
             data: data
         })
     },
-    openDev () {
+    openDev() {
         return ipcRenderer.invoke("utils", {
             name: "openDev",
             data: null
@@ -77,13 +77,13 @@ const utils = {
 }
 contextBridge.exposeInMainWorld('electron_utils', utils);
 contextBridge.exposeInMainWorld('electron_view', {
-    close () {
+    close() {
         ipcRenderer.invoke("view", { name: "close", data: null })
     },
-    minimize () {
+    minimize() {
         ipcRenderer.invoke("view", { name: "minimize", data: null })
     },
-    reStart () {
+    reStart() {
         ipcRenderer.invoke("view", { name: "reStart", data: null })
     }
 });

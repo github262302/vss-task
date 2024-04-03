@@ -7,6 +7,7 @@ import { RootState } from "../index";
 type project = {
   name: string;
   path: string;
+  scripts: {name:string;command:string}[];
 };
 type actionPayload = {
   type: string;

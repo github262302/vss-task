@@ -1,7 +1,7 @@
 // main
 
 // electron 模块可以用来控制应用的生命周期和创建原生浏览窗口
-import { app, BrowserWindow, ipcMain } from 'electron';
+import { app, BrowserView, BrowserWindow, Menu } from 'electron';
 import { join, resolve } from 'path';
 import { setting } from "vss/settings"
 
@@ -9,43 +9,33 @@ import "vss/ipc"
 import { setMainWindow } from 'vss/process/index';
 import { setMW } from 'vss/utils';
 import { MainWindow } from 'vss/core/mainWindow';
+import { createMenuTemplate } from './menu';
 const isPackaged = app.isPackaged
 const basePath = app.getAppPath()
 const iconPath = resolve(basePath, "images", "icon.png")
-const preloadPath = join(basePath, "dist","main", 'preload.cjs')
+const preloadPath = join(basePath, "dist", "main", 'preload.cjs')
 // const settingsPath = "./electron_settings_js.cjs"
-const htmlPath = join(basePath, "dist", "render",'index.html')
+const htmlPath = join(basePath, "dist", "render", 'index.html')
 const createWindow = () => {
     // 创建浏览窗口
     const mainWindow = new BrowserWindow({
-        width: 1200,
-        height: 800,
+        width: 345,
+        height: 485,
         webPreferences: {
             preload: preloadPath,
         },
         resizable: false,
         closable: true,
-        titleBarStyle: 'hidden',
         icon: iconPath
     });
+
     const mw = new MainWindow("main", mainWindow)
+    const menu = Menu.buildFromTemplate(createMenuTemplate())
+    Menu.setApplicationMenu(menu);
+
     setMainWindow(mainWindow)
     setMW(mainWindow)
-    ipcMain.handle("view", async (e, { name, data }) => {
-        switch (name) {
-            case "close":
-                app.exit()
-                break
-            case "minimize":
-                mw.mainWindow.minimize()
-                break
-            case "reStart":
-                mw.mainWindow.reload()
-                break
-            default:
-                break
-        }
-    })
+
     // mw.mainWindow.minimize()
     // P.setMainWindow(mainWindow)
     // 加载 index.html

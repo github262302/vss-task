@@ -1,0 +1,53 @@
+.container{
+    display: grid;
+    gap: 12px;
+    grid-template-columns: repeat(2, 142px);
+    grid-template-rows: 100px;
+    padding: 24px;
+}
+.project-item{
+    height: 100%;
+    background-color: #F0F0F0;
+    display: grid;
+    place-items: center;
+    position: relative;
+    border-radius:  8px;
+    overflow: hidden;
+    // hover  占 2row 1col  2行1列
+    &:hover{
+        grid-row: span 2;
+    } 
+}
+.project-item-menu{
+    position: absolute;
+    top: 0;
+    left: 0;
+    display: none;
+    background-color: #00000065;
+    height: 100%;
+    width: 100%;
+    padding: 12px;
+    box-sizing: border-box;
+    overflow-y: auto;
+    // hidden scrollbar
+    &::-webkit-scrollbar {
+        display: none;
+    }
+    color: white;
+
+}
+.project-item-menu-item{
+    margin: 12px 0;
+    cursor: pointer;
+}
+.project-item:hover .project-item-menu{
+    display: block;
+}
+.project-add{
+    height: 100px;
+    background-color: #F0F0F0;
+    font-size: 50px;
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+}

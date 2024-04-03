@@ -1,4 +1,3 @@
-import { ipcMain } from "electron"
 import { setProgressBar } from "vss/utils"
 
 export const runing = []
@@ -39,6 +38,3 @@ export function closeProcess (pid) {
 export function get () {
     return JSON.parse(JSON.stringify(runing))
 }
-ipcMain.handle("getProcessData", async () => {
-    return get()
-})
