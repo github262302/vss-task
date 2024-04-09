@@ -2,7 +2,7 @@ import React, { useState } from "react";
 import { createRoot } from "react-dom/client";
 import { Button, Form } from "antd";
 import { Input } from "antd";
-import { chooseFolder } from "./utils";
+import { chooseFolder, closeAddProject, reloadMainWindow } from "./utils";
 import { ups } from "./utils/project";
 const container = document.getElementById("app");
 const root = createRoot(container);
@@ -11,14 +11,17 @@ type FieldType = {
   path?: string;
 };
 function Root() {
-  const [path, setPath] = useState("");
   const [formInstance] = Form.useForm();
   const onFinish = v => {
     // 新增项目
-    console.log("v",v);
-    alert("新增项目成功"+JSON.stringify(v));
+    console.log("add project success",JSON.stringify(v));
     ups.add(v);
     // 新增后关闭弹窗
+    console.log("close");
+    closeAddProject();
+    // 刷新main页面
+    console.log("reload");
+    reloadMainWindow();
   };
   function choose() {
     setTimeout(() => {

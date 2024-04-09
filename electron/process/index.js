@@ -1,4 +1,4 @@
-import { spawn } from "child_process";
+import { exec, spawn } from "child_process";
 import { post, get, runing } from "./state.js";
 const EVENT_NAME_PROCESS = "process"
 
@@ -71,6 +71,20 @@ export function startProcess ({ common, args, cwd, name }) {
     child.on('error', (err) => {
         this.sendToProcess({ type: "error", data: "error:" + err.message }, pid)
     })
+}
+/**
+ * 
+ * common yarn args start 
+ */
+export function startProcessOutSide ({ common, args, cwd }) {
+    const argsStr = args.join(" ")
+    let s = spawn('powershell', ["start-process", "powershell", "-WorkingDirectory", cwd ,"-ArgumentList",`"-NoExit","-Command","${common} ${argsStr}"`], {
+
+    })
+    s.on("exit", (err, sig) => {
+        console.log("exit", err, sig, s.pid);
+    })
+    s.unref()
 }
 export function setMainWindow (mw) {
     if (mw && mw.webContents) {

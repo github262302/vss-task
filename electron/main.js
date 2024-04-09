@@ -10,12 +10,11 @@ import { setMainWindow } from 'vss/process/index';
 import { setMW } from 'vss/utils';
 import { MainWindow } from 'vss/core/mainWindow';
 import { createMenuTemplate } from './menu';
+import { mainPath } from './renderPath';
 const isPackaged = app.isPackaged
 const basePath = app.getAppPath()
 const iconPath = resolve(basePath, "images", "icon.png")
 const preloadPath = join(basePath, "dist", "main", 'preload.cjs')
-// const settingsPath = "./electron_settings_js.cjs"
-const htmlPath = join(basePath, "dist", "render", 'index.html')
 const createWindow = () => {
     // 创建浏览窗口
     const mainWindow = new BrowserWindow({
@@ -40,12 +39,10 @@ const createWindow = () => {
     // P.setMainWindow(mainWindow)
     // 加载 index.html
     if (!isPackaged) {
-        mainWindow.loadURL('http://localhost:5173/')
         mainWindow.webContents.openDevTools()
-
-    } else {
-        mainWindow.loadFile(htmlPath)
-
+        mainWindow.loadURL(mainPath)
+    }else{
+        mainWindow.loadFile(mainPath)
     }
 };
 

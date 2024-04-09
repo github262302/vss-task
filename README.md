@@ -9,15 +9,12 @@ Vss-Task
 更方便的启动和管理项目中的任务(vscode-task,npm...)
 </h6>
 
+#### 项目说明
+##### script
+- `render:build` 渲染项目打包
+- `ele:build` ele项目打包
+- `app:package` 打包测试
+- `app:make` 打包成安装包
 
-[![pCrpApQ.png](https://s1.ax1x.com/2023/07/03/pCrpApQ.png)](https://imgse.com/i/pCrpApQ)
-
-#### 酷炫的启动动画
-[![pCatFf2R.png](./images/view.gif)](https://imgse.com/i/pCatF2R)
-#### 系统设置
-##### 可以配置自己的启动任务gif库
-[![pCwWOQ1.png](https://s1.ax1x.com/2023/06/29/pCwWOQ1.png)](https://imgse.com/i/pCwWOQ1)
-
-#### 多图预览
-
-[![pCrpFfg.png](https://s1.ax1x.com/2023/07/03/pCrpFfg.png)](https://imgse.com/i/pCrpFfg)
+##### 开发
+`pnpm dev`

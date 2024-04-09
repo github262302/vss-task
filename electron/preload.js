@@ -73,6 +73,30 @@ const utils = {
             name: "openDev",
             data: null
         })
+    },
+    openAddProject() {
+        return ipcRenderer.invoke("utils", {
+            name: "openAddProject",
+            data: null
+        })
+    },
+    closeAddProject() {
+        return ipcRenderer.invoke("utils", {
+            name: "closeAddProject",
+            data: null
+        })
+    },
+    reloadMainWindow() {
+        return ipcRenderer.invoke("utils", {
+            name: "reloadMainWindow",
+            data: null
+        })
+    },
+    startProcessOutSide(data) {
+        return ipcRenderer.invoke("utils", {
+            name: "startProcessOutSide",
+            data: data
+        })
     }
 }
 contextBridge.exposeInMainWorld('electron_utils', utils);

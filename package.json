@@ -1,6 +1,6 @@
 {
   "name": "vss-task",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "private": true,
   "authors": "github262302",
   "description": "更方便的启动和管理项目中的任务(vscode-task,npm...)",
@@ -11,12 +11,12 @@
     "render:preview": "vite preview",
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs --fix --ignore-path .gitignore",
     "ele:Start": "electron .",
-    "ele:build-watch": "webpack build --watch  -c ./electron.webpack.mjs",
-    "ele:build": "webpack  -c ./electron.webpack.mjs",
+    "ele:build-watch": "webpack build --watch  -c ./electron.webpack.cjs",
+    "ele:build": "webpack  -c ./electron.webpack.cjs",
     "electron:Start:watch": "nodemon --ignore src --delay 1 --exec \"powershell cls;pnpm electron:Start\"",
     "app:start": "electron-forge start",
-    "app:package": "pnpm ele:build & pnpm electron-forge package",
-    "app:make": "pnpm ele:build & pnpm electron-forge make"
+    "app:package": "pnpm render:build & pnpm ele:build & pnpm electron-forge package",
+    "app:make": "pnpm render:build & pnpm ele:build & pnpm electron-forge make"
   },
   "dependencies": {
     "@ant-design/icons": "^5.1.4",

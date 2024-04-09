@@ -4,9 +4,19 @@
 <head>
   <meta charset="UTF-8">
   <link rel="icon" href="/favicon.ico">
+  <link rel="stylesheet" href="/iconfont.css">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>VSS-Task</title>
 </head>
+<style>
+  i.btn {
+    cursor: pointer;
+  }
+  i.btn + i.btn {
+    margin-left: 8px;
+  }
+
+</style>
 <script>
   function clearSettings () {
     localStorage.setItem("settings", '{"nodePackageTools":"pnpm"}')
@@ -22,104 +32,13 @@
 <body>
   <div id="app">
     <div class="error-help">
-      <h3>Vss-Task</h3>
+      <h3>Loading...</h3>
       <button onclick="clearSettings()">清理设置缓存</button>
       <button onclick="clearLProject()">清理项目缓存</button>
       <button onclick="openDev()">打开调试台</button>
     </div>
   </div>
-  <div class="start-animation"></div>
-  <script>
-    var imgs = ["url('/SwordGod.gif')", "url('/divilcry.gif')", "url('/redyear.gif')"]
-    // 防抖函数
-    function debounce (fn, delay) {
-      let timer = null
-      return function () {
-        if (timer) {
-          clearTimeout(timer)
-        }
-        timer = setTimeout(() => {
-          fn.apply(this, arguments)
-        }, delay)
-      }
-    }
-    function setImgs (data) {
-      imgs.splice(0, imgs.length, ...data)
-    }
-    function startAnimation () {
-      const startAnimation = document.querySelector('.start-animation')
-      startAnimation.classList.add('active')
-      stopAnimation()
-    }
-    function stopAnimationO () {
-      const startAnimation = document.querySelector('.start-animation')
-      startAnimation.classList.remove('active')
-      startAnimation.style.backgroundImage = imgs[Math.floor(Math.random() * imgs.length)]
-    }
-    var stopAnimation = debounce(stopAnimationO, 2000) 
-  </script>
   <script type="module" src="/src/main.jsx"></script>
-  <script src="https://at.alicdn.com/t/c/font_4134002_raw09x9n4mn.js"></script>
-  <style type="text/css">
-    :root {
-      --current-color: #409eff;
-      --bg-image: url("/SwordGod.gif");
-    }
-
-    .start-animation {
-      background-image: var(--bg-image);
-      background-color: rgba(0, 0, 0, 0.551);
-      z-index: 9999;
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100vw;
-      height: 100vh;
-      background-repeat: no-repeat;
-      background-position: 50% 50%;
-      background-size: 150%;
-      /* opacity: 0.8; */
-      display: none;
-    }
-
-    @keyframes active {
-      0% {
-        opacity: 0.9;
-      }
-
-      80% {
-        opacity: 0.9;
-      }
-
-      100% {
-        opacity: 0;
-        z-index: -99;
-      }
-    }
-
-    .active {
-      animation: active;
-      animation-duration: 1.2s;
-      animation-fill-mode: forwards;
-      animation-iteration-count: 1;
-      display: block;
-    }
-
-    :root {
-      --el-color-primary: #6c63ff;
-      /* 将主题颜色设置为紫色 */
-      --el-color-primary-light-1: #171e66 !important;
-      --el-color-primary-light-2: #22278c !important;
-      --el-color-primary-light-3: #3436b3 !important;
-      --el-color-primary-light-4: #4c4ad9 !important;
-      --el-color-primary-light-5: #6c63ff !important;
-      --el-color-primary-light-6: #968cff !important;
-      --el-color-primary-light-7: #beb5ff !important;
-      --el-color-primary-light-8: #e3deff !important;
-      --el-color-primary-light-9: #f3f0ff !important;
-      --el-color-primary-light-10: #f3f0ff !important;
-    }
-  </style>
 </body>
 <style>
   .error-help {

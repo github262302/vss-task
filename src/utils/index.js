@@ -26,6 +26,45 @@ export function onMessage(fn) {
 export function reStart() {
     window.electron_view.reStart()
 }
+export function openAddProject() {
+    window.electron_utils.openAddProject()
+}
+export function openDevTools() {
+    window.electron_utils.openDevTools()
+}
+export function closeAddProject() {
+    window.electron_utils.closeAddProject()
+}
+export function reloadMainWindow() {
+    window.electron_utils.reloadMainWindow()
+}
+/**
+ * 
+ * @param {startProcessOutSideParams} data 
+ */
+export function startProcessOutSide(data) {
+    console.log("electron_utils before", data);
+    window.electron_utils.startProcessOutSide(data)
+}
+/**
+ * @type {Electron_Utils}
+ */
+export const utils = {
+    chooseFolder,
+    loadProject: loadProjectTask,
+    openFolder,
+    openTerminal,
+    openVscode,
+    onMessage,
+    openAddProject,
+    loadImgs,
+    openDev,
+    openDevTools,
+    closeAddProject,
+    reloadMainWindow,
+    startProcessOutSide
+}
+
 /** 
  * @param {{path:string;suffix:string}} data
 */

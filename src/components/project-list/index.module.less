@@ -37,8 +37,10 @@
 
 }
 .project-item-menu-item{
-    margin: 12px 0;
     cursor: pointer;
+    & + & {
+        margin-top: 12px;      
+    }
 }
 .project-item:hover .project-item-menu{
     display: block;

@@ -1,21 +1,25 @@
 import styles from "./status.module.less";
-import Github from "@/assets/icons/github.svg";
-import { BugOutlined, PictureOutlined, StarOutlined } from "@ant-design/icons";
+import { useAppDispatch, useAppSelector } from "@/store";
+import { settings_data, update_settings } from "@/store/slice/settings";
 export default () => {
+  const settings = useAppSelector(settings_data);
+  const dispatch = useAppDispatch();
+  const value = settings.nodePackageTools;
+  const selectChange = (e: any) => {
+    dispatch(
+      update_settings({ ...settings, nodePackageTools: e.target.value }),
+    );
+  };
+
   return (
     <div className={styles["tool"]}>
-      <div className={styles["items"]}>statusBar</div>
       <div className={styles["items"]}>
-        <img src={Github} />
-      </div>
-      <div className={styles["items"]}>
-        <BugOutlined />
-      </div>
-      <div className={styles["items"]}>
-        <PictureOutlined />
-      </div>
-      <div className={styles["items"]}>
-        <StarOutlined />
+        <select title="script使用的命令工具" onInput={selectChange} value={value}>
+          <option>pnpm</option>
+          <option>yarn</option>
+          <option>npm</option>
+          <option>cnpm</option>
+        </select>
       </div>
     </div>
   );
