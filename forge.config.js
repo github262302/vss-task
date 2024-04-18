@@ -1,4 +1,5 @@
 const path = require("path")
+const ico = path.resolve(__dirname, 'images', 'icon.ico')
 module.exports = {
   packagerConfig: {
     asar: {},
@@ -17,6 +18,8 @@ module.exports = {
     {
       name: '@electron-forge/maker-squirrel',
       config: {
+        iconUrl:ico,
+        setupIcon:ico
       },
     },
     {

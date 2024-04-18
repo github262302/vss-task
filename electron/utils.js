@@ -2,7 +2,7 @@ import { join, resolve } from "path";
 import { readFileSync, readdirSync } from "fs";
 import { app, BrowserWindow, Menu } from "electron";
 import { getMainWindow } from "./core/mainWindow";
-import { addProjectPath } from "./renderPath";
+import { addProjectPath, isPackaged } from "./renderPath";
 /**
  * @type {BrowserWindow}
  */
@@ -95,7 +95,11 @@ export function openAddProject() {
     },
     parent: main.mainWindow,
   });
-  addProjectChildren.loadURL(addProjectPath());
+  if(isPackaged){
+    addProjectChildren.loadFile(addProjectPath);
+  }else{
+    addProjectChildren.loadURL(addProjectPath);
+  }
   addProjectChildren.once("ready-to-show", () => {
     addProjectChildren.setMenu(Menu.buildFromTemplate([]));
     addProjectChildren.show();

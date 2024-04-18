@@ -39,7 +39,7 @@ function buildHelpMenu() {
             {
                 label: 'Learn More',
                 click: async () => {
-                    await shell.openExternal('https://github.com/github262302')
+                    await shell.openExternal('https://github.com/github262302/vss-task')
                 }
             }
         ]
