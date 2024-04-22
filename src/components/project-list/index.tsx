@@ -31,7 +31,7 @@ export default function ProjectList() {
     openFolder(path);
   };
   const startProcess = (index, data) => {
-    let node = pd[index];
+    let node = renderData[index];
     const params: startProcessOutSideParams = {
       cwd: node.path,
       projectName: node.name,
