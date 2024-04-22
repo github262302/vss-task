@@ -1,25 +1,38 @@
-import { project_data } from "@/store/slice/project";
+import { get_project_data_async, project_data } from "@/store/slice/project";
 import Styles from "./index.module.less";
-import { useAppSelector } from "@/store";
+import { useAppDispatch, useAppSelector } from "@/store";
 import { openAddProject, openTerminal, startProcessOutSide } from "@/utils";
 import { openFolder } from "@/utils/index";
 import { settings_data } from "@/store/slice/settings";
+import { ups } from "@/utils/project";
 export default function ProjectList() {
+  const dispatch = useAppDispatch();
   const pd = useAppSelector(project_data);
   const settings = useAppSelector(settings_data);
-  console.log("pd", pd);
+  const renderData = pd.slice(0);
+  renderData.sort((a, b) => {
+    return a.scripts.length - b.scripts.length;
+  });
   const addProject = () => {
     openAddProject();
   };
   const terminal = path => {
     openTerminal(path);
   };
+  const deleteProject = (name: string) => {
+    console.log("delete", name);
+    const isRemove = confirm("是否删除项目 " + name + " ?");
+    if (isRemove) {
+      ups.remove(name);
+      dispatch(get_project_data_async());
+    }
+  };
   const folder = path => {
     openFolder(path);
   };
   const startProcess = (index, data) => {
     let node = pd[index];
-    const params:startProcessOutSideParams = {
+    const params: startProcessOutSideParams = {
       cwd: node.path,
       projectName: node.name,
       scriptName: data.name,
@@ -31,10 +44,12 @@ export default function ProjectList() {
   };
   return (
     <div className={Styles["container"]}>
-      {pd.map((v, i) => {
+      {renderData.map((v, i) => {
         return (
-          <div className={Styles["project-item"]} key={i}>
-            {v.name}
+          <>
+            <div className={Styles["project-item-title-container"]}>
+              <div className={Styles["project-item-title"]}>{v.name}</div>
+            </div>
             <div className={Styles["project-item-menu"]}>
               <div
                 className={Styles["project-item-menu-item"]}
@@ -47,6 +62,10 @@ export default function ProjectList() {
                 <i
                   onClick={() => folder(v.path)}
                   className="btn icon iconfont icon-folder"
+                ></i>
+                <i
+                  onClick={() => deleteProject(v.name)}
+                  className="btn icon iconfont icon-shanchu"
                 ></i>
               </div>
               {v.scripts.map((it, ii) => {
@@ -61,7 +80,7 @@ export default function ProjectList() {
                 );
               })}
             </div>
-          </div>
+          </>
         );
       })}
       <div onClick={addProject} className={Styles["project-add"]}>

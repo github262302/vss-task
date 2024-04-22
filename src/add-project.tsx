@@ -55,7 +55,10 @@ function Root() {
         <Form.Item<FieldType>
           label="名称"
           name="name"
-          rules={[{ required: true, message: "请输入项目名称！" }]}
+          rules={[{ required: true, message: "请输入项目名称！" },{
+            pattern: /^[a-zA-Z0-9_-]+$/,
+            message: "项目名称只能包含字母、数字、下划线和中划线"
+          }]}
         >
           <Input />
         </Form.Item>

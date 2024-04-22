@@ -20,8 +20,13 @@ export class useProjectStorage {
     }
     add (d) {
         this._load()
-        this.data.push(d)
-        this.storage()
+        const index = this.data.findIndex(item => item.name == d.name);
+        if (index !== -1) {
+            alert("项目名已存在");
+        }else{
+            this.data.push(d)
+            this.storage()
+        }
     }
     remove (name) {
         this._load()
